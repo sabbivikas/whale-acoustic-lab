@@ -1,0 +1,2315 @@
+{
+  "alignment_validation": {
+    "csv_rows": 3840,
+    "ornament_entries": 3840,
+    "paper_reported_rows": 3948,
+    "public_release_shortfall": 108,
+    "resolution": "Use only the 3,840 mutually aligned public rows; the absent 108 rows are not inferred.",
+    "rhythm_entries": 3840,
+    "row_alignment_accepted": true,
+    "saved_cluster_to_published_family": {
+      "0": 3,
+      "1": 2,
+      "2": 5,
+      "3": 4,
+      "4": 6,
+      "5": 0,
+      "6": 14,
+      "7": 10,
+      "8": 11,
+      "9": 12,
+      "10": 9,
+      "11": 15,
+      "12": 1,
+      "13": 13,
+      "14": 17,
+      "15": 7,
+      "16": 8,
+      "17": 16
+    }
+  },
+  "combinations": {
+    "0:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 37,
+      "followed_by_coda_frequency": 0.9459459459459459,
+      "followed_by_different_speaker_frequency": 0.7297297297297297,
+      "median_time_to_following_coda_seconds": 3.8981000000003405,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 14,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 9,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 8,
+          "rhythm_family": "3D",
+          "rhythm_family_id": 0
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.24324324324324326,
+        "middle": 0.4594594594594595,
+        "opening": 0.2972972972972973
+      },
+      "preceded_by_different_speaker_frequency": 0.7297297297297297,
+      "rhythm_family_id": 0,
+      "tempo_type": 0
+    },
+    "0:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 2,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 1.0,
+      "median_time_to_following_coda_seconds": 1.8220499999988533,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.5,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.5,
+      "rhythm_family_id": 0,
+      "tempo_type": 1
+    },
+    "10:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 2,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 4.206850000000031,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.5,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 10,
+      "tempo_type": 0
+    },
+    "10:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 6.686900000000605,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 1.0,
+        "opening": 0.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 10,
+      "tempo_type": 2
+    },
+    "10:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 4,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.5,
+      "median_time_to_following_coda_seconds": 4.148700000000645,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "6R",
+          "rhythm_family_id": 8
+        },
+        {
+          "count": 1,
+          "rhythm_family": "8D/R family",
+          "rhythm_family_id": 12
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.25,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.25,
+        "middle": 0.25,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.5,
+      "rhythm_family_id": 10,
+      "tempo_type": 3
+    },
+    "10:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 47,
+      "followed_by_coda_frequency": 0.723404255319149,
+      "followed_by_different_speaker_frequency": 0.5957446808510638,
+      "median_time_to_following_coda_seconds": 3.6722500000000764,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 17,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 6,
+          "rhythm_family": "8D/R family",
+          "rhythm_family_id": 12
+        },
+        {
+          "count": 3,
+          "rhythm_family": "6R",
+          "rhythm_family_id": 8
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 7,
+        "frequency": 0.14893617021276595,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.40425531914893614,
+        "middle": 0.3404255319148936,
+        "opening": 0.2553191489361702
+      },
+      "preceded_by_different_speaker_frequency": 0.5957446808510638,
+      "rhythm_family_id": 10,
+      "tempo_type": 4
+    },
+    "11:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 21,
+      "followed_by_coda_frequency": 0.8571428571428571,
+      "followed_by_different_speaker_frequency": 0.38095238095238093,
+      "median_time_to_following_coda_seconds": 4.2454000000007,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 6,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 5,
+          "rhythm_family": "7i",
+          "rhythm_family_id": 11
+        },
+        {
+          "count": 2,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.047619047619047616,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.42857142857142855,
+        "middle": 0.09523809523809523,
+        "opening": 0.47619047619047616
+      },
+      "preceded_by_different_speaker_frequency": 0.42857142857142855,
+      "rhythm_family_id": 11,
+      "tempo_type": 0
+    },
+    "11:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 9,
+      "followed_by_coda_frequency": 0.5555555555555556,
+      "followed_by_different_speaker_frequency": 0.2222222222222222,
+      "median_time_to_following_coda_seconds": 3.306300000000192,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 3,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 2,
+          "rhythm_family": "7i",
+          "rhythm_family_id": 11
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 3,
+        "frequency": 0.3333333333333333,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.7777777777777778,
+        "middle": 0.2222222222222222,
+        "opening": 0.0
+      },
+      "preceded_by_different_speaker_frequency": 0.1111111111111111,
+      "rhythm_family_id": 11,
+      "tempo_type": 1
+    },
+    "11:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 1.0,
+      "median_time_to_following_coda_seconds": 4.02660000000003,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 1.0,
+      "rhythm_family_id": 11,
+      "tempo_type": 2
+    },
+    "11:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 0.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": null,
+      "most_common_next_rhythm_patterns": [],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 1.0,
+        "opening": 0.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 11,
+      "tempo_type": 3
+    },
+    "11:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 2,
+      "followed_by_coda_frequency": 0.5,
+      "followed_by_different_speaker_frequency": 0.5,
+      "median_time_to_following_coda_seconds": 0.4416999999998552,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.5,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.5,
+        "middle": 0.0,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.5,
+      "rhythm_family_id": 11,
+      "tempo_type": 4
+    },
+    "12:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 2,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 4.390099999999393,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 12,
+      "tempo_type": 0
+    },
+    "12:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 32,
+      "followed_by_coda_frequency": 0.8125,
+      "followed_by_different_speaker_frequency": 0.6875,
+      "median_time_to_following_coda_seconds": 2.862099999999373,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 14,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 3,
+          "rhythm_family": "7D family",
+          "rhythm_family_id": 10
+        },
+        {
+          "count": 3,
+          "rhythm_family": "9R",
+          "rhythm_family_id": 14
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 7,
+        "frequency": 0.21875,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.5625,
+        "middle": 0.125,
+        "opening": 0.3125
+      },
+      "preceded_by_different_speaker_frequency": 0.65625,
+      "rhythm_family_id": 12,
+      "tempo_type": 4
+    },
+    "13:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 49,
+      "followed_by_coda_frequency": 0.7959183673469388,
+      "followed_by_different_speaker_frequency": 0.24489795918367346,
+      "median_time_to_following_coda_seconds": 4.922899999997753,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 16,
+          "rhythm_family": "8i",
+          "rhythm_family_id": 13
+        },
+        {
+          "count": 8,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 6,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 5,
+        "frequency": 0.10204081632653061,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3877551020408163,
+        "middle": 0.16326530612244897,
+        "opening": 0.4489795918367347
+      },
+      "preceded_by_different_speaker_frequency": 0.24489795918367346,
+      "rhythm_family_id": 13,
+      "tempo_type": 0
+    },
+    "13:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 3,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.6666666666666666,
+      "median_time_to_following_coda_seconds": 1.6965999999993073,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 0.6666666666666666,
+      "rhythm_family_id": 13,
+      "tempo_type": 1
+    },
+    "13:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 4,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.25,
+      "median_time_to_following_coda_seconds": 3.921099999999342,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        },
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.25,
+        "opening": 0.75
+      },
+      "preceded_by_different_speaker_frequency": 0.25,
+      "rhythm_family_id": 13,
+      "tempo_type": 2
+    },
+    "13:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 3.721000000001368,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "8D/R family",
+          "rhythm_family_id": 12
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 1.0,
+        "middle": 0.0,
+        "opening": 0.0
+      },
+      "preceded_by_different_speaker_frequency": 1.0,
+      "rhythm_family_id": 13,
+      "tempo_type": 4
+    },
+    "14:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 5,
+      "followed_by_coda_frequency": 0.8,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 4.377200000000812,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "10i",
+          "rhythm_family_id": 17
+        },
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        },
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.2,
+        "middle": 0.2,
+        "opening": 0.6
+      },
+      "preceded_by_different_speaker_frequency": 0.2,
+      "rhythm_family_id": 14,
+      "tempo_type": 0
+    },
+    "14:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 18,
+      "followed_by_coda_frequency": 0.8888888888888888,
+      "followed_by_different_speaker_frequency": 0.6666666666666666,
+      "median_time_to_following_coda_seconds": 2.312650000000019,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 7,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 4,
+          "rhythm_family": "7D family",
+          "rhythm_family_id": 10
+        },
+        {
+          "count": 2,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.05555555555555555,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.4444444444444444,
+        "middle": 0.05555555555555555,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.6666666666666666,
+      "rhythm_family_id": 14,
+      "tempo_type": 4
+    },
+    "15:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 29,
+      "followed_by_coda_frequency": 0.7586206896551724,
+      "followed_by_different_speaker_frequency": 0.27586206896551724,
+      "median_time_to_following_coda_seconds": 4.6617500000011205,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 7,
+          "rhythm_family": "8i",
+          "rhythm_family_id": 13
+        },
+        {
+          "count": 6,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        },
+        {
+          "count": 3,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 7,
+        "frequency": 0.2413793103448276,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.2413793103448276,
+        "middle": 0.27586206896551724,
+        "opening": 0.4827586206896552
+      },
+      "preceded_by_different_speaker_frequency": 0.2413793103448276,
+      "rhythm_family_id": 15,
+      "tempo_type": 0
+    },
+    "15:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 3,
+      "followed_by_coda_frequency": 0.6666666666666666,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 3.5801499999998327,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "8i",
+          "rhythm_family_id": 13
+        },
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 2,
+        "frequency": 0.6666666666666666,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3333333333333333,
+        "middle": 0.0,
+        "opening": 0.6666666666666666
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 15,
+      "tempo_type": 1
+    },
+    "15:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 11,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.2727272727272727,
+      "median_time_to_following_coda_seconds": 2.755800000000022,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "10i",
+          "rhythm_family_id": 17
+        },
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 0.36363636363636365,
+      "rhythm_family_id": 15,
+      "tempo_type": 2
+    },
+    "16:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 8,
+      "followed_by_coda_frequency": 0.875,
+      "followed_by_different_speaker_frequency": 0.75,
+      "median_time_to_following_coda_seconds": 3.5028000000002066,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 5,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 1,
+          "rhythm_family": "6i",
+          "rhythm_family_id": 9
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 2,
+        "frequency": 0.25,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.5,
+        "middle": 0.125,
+        "opening": 0.375
+      },
+      "preceded_by_different_speaker_frequency": 0.75,
+      "rhythm_family_id": 16,
+      "tempo_type": 4
+    },
+    "17:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 6,
+      "followed_by_coda_frequency": 0.5,
+      "followed_by_different_speaker_frequency": 0.16666666666666666,
+      "median_time_to_following_coda_seconds": 1.5171000000009371,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        },
+        {
+          "count": 1,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 2,
+        "frequency": 0.3333333333333333,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.16666666666666666,
+        "middle": 0.3333333333333333,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.3333333333333333,
+      "rhythm_family_id": 17,
+      "tempo_type": 0
+    },
+    "17:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 4,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 4.6578000000008615,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "10i",
+          "rhythm_family_id": 17
+        },
+        {
+          "count": 2,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.5,
+        "middle": 0.0,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 17,
+      "tempo_type": 1
+    },
+    "17:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 3,
+      "followed_by_coda_frequency": 0.6666666666666666,
+      "followed_by_different_speaker_frequency": 0.3333333333333333,
+      "median_time_to_following_coda_seconds": 5.218000000000984,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        },
+        {
+          "count": 1,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.3333333333333333,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.3333333333333333,
+        "opening": 0.6666666666666666
+      },
+      "preceded_by_different_speaker_frequency": 0.3333333333333333,
+      "rhythm_family_id": 17,
+      "tempo_type": 2
+    },
+    "1:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 9,
+      "followed_by_coda_frequency": 0.7777777777777778,
+      "followed_by_different_speaker_frequency": 0.4444444444444444,
+      "median_time_to_following_coda_seconds": 1.6072000000003754,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 4,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 2,
+          "rhythm_family": "3R",
+          "rhythm_family_id": 1
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.1111111111111111,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.4444444444444444,
+        "middle": 0.1111111111111111,
+        "opening": 0.4444444444444444
+      },
+      "preceded_by_different_speaker_frequency": 0.3333333333333333,
+      "rhythm_family_id": 1,
+      "tempo_type": 0
+    },
+    "1:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 1.0,
+      "median_time_to_following_coda_seconds": 7.9354999999995925,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 1.0,
+      "rhythm_family_id": 1,
+      "tempo_type": 2
+    },
+    "2:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 3,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.3333333333333333,
+      "median_time_to_following_coda_seconds": 3.3100999999987835,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 3,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.3333333333333333,
+        "opening": 0.6666666666666666
+      },
+      "preceded_by_different_speaker_frequency": 0.3333333333333333,
+      "rhythm_family_id": 2,
+      "tempo_type": 2
+    },
+    "2:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 2,
+      "followed_by_coda_frequency": 0.5,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 2.861800000002404,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.5,
+        "middle": 0.0,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.5,
+      "rhythm_family_id": 2,
+      "tempo_type": 3
+    },
+    "2:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 1.0,
+      "median_time_to_following_coda_seconds": 2.0045000000009168,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 2,
+      "tempo_type": 4
+    },
+    "3:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 18,
+      "followed_by_coda_frequency": 0.8888888888888888,
+      "followed_by_different_speaker_frequency": 0.6666666666666666,
+      "median_time_to_following_coda_seconds": 1.4450500000002648,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 7,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 5,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 3,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.1111111111111111,
+        "middle": 0.2222222222222222,
+        "opening": 0.6666666666666666
+      },
+      "preceded_by_different_speaker_frequency": 0.7222222222222222,
+      "rhythm_family_id": 3,
+      "tempo_type": 0
+    },
+    "3:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 4,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 1.0,
+      "median_time_to_following_coda_seconds": 1.9406500000004598,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.25,
+        "opening": 0.75
+      },
+      "preceded_by_different_speaker_frequency": 1.0,
+      "rhythm_family_id": 3,
+      "tempo_type": 1
+    },
+    "3:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 96,
+      "followed_by_coda_frequency": 0.9270833333333334,
+      "followed_by_different_speaker_frequency": 0.7604166666666666,
+      "median_time_to_following_coda_seconds": 2.085800000000745,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 48,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 13,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 9,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.4479166666666667,
+        "middle": 0.3645833333333333,
+        "opening": 0.1875
+      },
+      "preceded_by_different_speaker_frequency": 0.78125,
+      "rhythm_family_id": 3,
+      "tempo_type": 2
+    },
+    "3:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 78,
+      "followed_by_coda_frequency": 0.9743589743589743,
+      "followed_by_different_speaker_frequency": 0.7051282051282052,
+      "median_time_to_following_coda_seconds": 1.2774500000004991,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 42,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 20,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 2,
+          "rhythm_family": "6R",
+          "rhythm_family_id": 8
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3974358974358974,
+        "middle": 0.2948717948717949,
+        "opening": 0.3076923076923077
+      },
+      "preceded_by_different_speaker_frequency": 0.7564102564102564,
+      "rhythm_family_id": 3,
+      "tempo_type": 3
+    },
+    "3:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 76,
+      "followed_by_coda_frequency": 0.8421052631578947,
+      "followed_by_different_speaker_frequency": 0.5131578947368421,
+      "median_time_to_following_coda_seconds": 3.2455500000005486,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 32,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 24,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 1,
+          "rhythm_family": "6R",
+          "rhythm_family_id": 8
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.35526315789473684,
+        "middle": 0.2894736842105263,
+        "opening": 0.35526315789473684
+      },
+      "preceded_by_different_speaker_frequency": 0.4605263157894737,
+      "rhythm_family_id": 3,
+      "tempo_type": 4
+    },
+    "4:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 2,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.5,
+      "median_time_to_following_coda_seconds": 4.35215000000062,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 1.0,
+      "rhythm_family_id": 4,
+      "tempo_type": 1
+    },
+    "4:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 3.892699999999877,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 1.0,
+      "rhythm_family_id": 4,
+      "tempo_type": 2
+    },
+    "4:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 4.47780000000057,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 4,
+      "tempo_type": 3
+    },
+    "5:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 174,
+      "followed_by_coda_frequency": 0.9022988505747126,
+      "followed_by_different_speaker_frequency": 0.42528735632183906,
+      "median_time_to_following_coda_seconds": 3.983799999999974,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 66,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 66,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 8,
+          "rhythm_family": "3D",
+          "rhythm_family_id": 0
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.005747126436781609,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.40229885057471265,
+        "middle": 0.25862068965517243,
+        "opening": 0.3390804597701149
+      },
+      "preceded_by_different_speaker_frequency": 0.40804597701149425,
+      "rhythm_family_id": 5,
+      "tempo_type": 0
+    },
+    "5:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 1.0,
+      "median_time_to_following_coda_seconds": 0.9838000000017928,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 1.0,
+        "middle": 0.0,
+        "opening": 0.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 5,
+      "tempo_type": 1
+    },
+    "5:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 546,
+      "followed_by_coda_frequency": 0.9468864468864469,
+      "followed_by_different_speaker_frequency": 0.6538461538461539,
+      "median_time_to_following_coda_seconds": 2.5831000000000586,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 336,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 62,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 54,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 3,
+        "frequency": 0.005494505494505495,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3553113553113553,
+        "middle": 0.3241758241758242,
+        "opening": 0.32051282051282054
+      },
+      "preceded_by_different_speaker_frequency": 0.6556776556776557,
+      "rhythm_family_id": 5,
+      "tempo_type": 2
+    },
+    "5:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 322,
+      "followed_by_coda_frequency": 0.9440993788819876,
+      "followed_by_different_speaker_frequency": 0.6708074534161491,
+      "median_time_to_following_coda_seconds": 3.246549999999843,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 216,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 36,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 9,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 3,
+        "frequency": 0.009316770186335404,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.2919254658385093,
+        "middle": 0.35714285714285715,
+        "opening": 0.35093167701863354
+      },
+      "preceded_by_different_speaker_frequency": 0.6614906832298136,
+      "rhythm_family_id": 5,
+      "tempo_type": 3
+    },
+    "5:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1316,
+      "followed_by_coda_frequency": 0.9042553191489362,
+      "followed_by_different_speaker_frequency": 0.5630699088145896,
+      "median_time_to_following_coda_seconds": 3.679199999998673,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1075,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 37,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 19,
+          "rhythm_family": "6R",
+          "rhythm_family_id": 8
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 7,
+        "frequency": 0.005319148936170213,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3860182370820669,
+        "middle": 0.27279635258358664,
+        "opening": 0.3411854103343465
+      },
+      "preceded_by_different_speaker_frequency": 0.5661094224924013,
+      "rhythm_family_id": 5,
+      "tempo_type": 4
+    },
+    "6:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 360,
+      "followed_by_coda_frequency": 0.8805555555555555,
+      "followed_by_different_speaker_frequency": 0.5194444444444445,
+      "median_time_to_following_coda_seconds": 3.913000000000011,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 204,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 79,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 11,
+          "rhythm_family": "3D",
+          "rhythm_family_id": 0
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3416666666666667,
+        "middle": 0.3194444444444444,
+        "opening": 0.3388888888888889
+      },
+      "preceded_by_different_speaker_frequency": 0.525,
+      "rhythm_family_id": 6,
+      "tempo_type": 0
+    },
+    "6:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 162,
+      "followed_by_coda_frequency": 0.9197530864197531,
+      "followed_by_different_speaker_frequency": 0.5061728395061729,
+      "median_time_to_following_coda_seconds": 3.625500000000102,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 88,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 50,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 5,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 2,
+        "frequency": 0.012345679012345678,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.2654320987654321,
+        "middle": 0.2839506172839506,
+        "opening": 0.4506172839506173
+      },
+      "preceded_by_different_speaker_frequency": 0.5061728395061729,
+      "rhythm_family_id": 6,
+      "tempo_type": 1
+    },
+    "6:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 32,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.8125,
+      "median_time_to_following_coda_seconds": 1.7632499999990614,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 13,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 7,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 6,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.03125,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.1875,
+        "middle": 0.3125,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.6875,
+      "rhythm_family_id": 6,
+      "tempo_type": 2
+    },
+    "6:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 3,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.3333333333333333,
+      "median_time_to_following_coda_seconds": 3.292299999999159,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.6666666666666666,
+        "middle": 0.3333333333333333,
+        "opening": 0.0
+      },
+      "preceded_by_different_speaker_frequency": 0.0,
+      "rhythm_family_id": 6,
+      "tempo_type": 3
+    },
+    "6:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 4,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.75,
+      "median_time_to_following_coda_seconds": 1.0704499999983454,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "10i",
+          "rhythm_family_id": 17
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 3,
+        "frequency": 0.75,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.25,
+        "middle": 0.25,
+        "opening": 0.5
+      },
+      "preceded_by_different_speaker_frequency": 0.5,
+      "rhythm_family_id": 6,
+      "tempo_type": 4
+    },
+    "7:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 2,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.5,
+      "median_time_to_following_coda_seconds": 2.2003000000001975,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "7i",
+          "rhythm_family_id": 11
+        },
+        {
+          "count": 1,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.5,
+        "middle": 0.5,
+        "opening": 0.0
+      },
+      "preceded_by_different_speaker_frequency": 0.5,
+      "rhythm_family_id": 7,
+      "tempo_type": 1
+    },
+    "7:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 27,
+      "followed_by_coda_frequency": 0.8148148148148148,
+      "followed_by_different_speaker_frequency": 0.2962962962962963,
+      "median_time_to_following_coda_seconds": 5.019849999999906,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 13,
+          "rhythm_family": "2+3",
+          "rhythm_family_id": 7
+        },
+        {
+          "count": 7,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "7D family",
+          "rhythm_family_id": 10
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 0,
+        "frequency": 0.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.14814814814814814,
+        "middle": 0.37037037037037035,
+        "opening": 0.48148148148148145
+      },
+      "preceded_by_different_speaker_frequency": 0.18518518518518517,
+      "rhythm_family_id": 7,
+      "tempo_type": 2
+    },
+    "8:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 26,
+      "followed_by_coda_frequency": 0.8846153846153846,
+      "followed_by_different_speaker_frequency": 0.46153846153846156,
+      "median_time_to_following_coda_seconds": 4.02900000000227,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 7,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 4,
+          "rhythm_family": "3D",
+          "rhythm_family_id": 0
+        },
+        {
+          "count": 4,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 19,
+        "frequency": 0.7307692307692307,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.38461538461538464,
+        "middle": 0.23076923076923078,
+        "opening": 0.38461538461538464
+      },
+      "preceded_by_different_speaker_frequency": 0.5384615384615384,
+      "rhythm_family_id": 8,
+      "tempo_type": 0
+    },
+    "8:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 3,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 3.802099999999996,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "8i",
+          "rhythm_family_id": 13
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 0.3333333333333333,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 0.3333333333333333,
+      "rhythm_family_id": 8,
+      "tempo_type": 1
+    },
+    "8:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 13,
+      "followed_by_coda_frequency": 0.9230769230769231,
+      "followed_by_different_speaker_frequency": 0.6153846153846154,
+      "median_time_to_following_coda_seconds": 2.876800000000003,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 8,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 2,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 1,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 10,
+        "frequency": 0.7692307692307693,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3076923076923077,
+        "middle": 0.38461538461538464,
+        "opening": 0.3076923076923077
+      },
+      "preceded_by_different_speaker_frequency": 0.7692307692307693,
+      "rhythm_family_id": 8,
+      "tempo_type": 2
+    },
+    "8:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 11,
+      "followed_by_coda_frequency": 0.6363636363636364,
+      "followed_by_different_speaker_frequency": 0.36363636363636365,
+      "median_time_to_following_coda_seconds": 3.7838999999994485,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 5,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "6R",
+          "rhythm_family_id": 8
+        },
+        {
+          "count": 1,
+          "rhythm_family": "9R",
+          "rhythm_family_id": 14
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 6,
+        "frequency": 0.5454545454545454,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.7272727272727273,
+        "middle": 0.18181818181818182,
+        "opening": 0.09090909090909091
+      },
+      "preceded_by_different_speaker_frequency": 0.6363636363636364,
+      "rhythm_family_id": 8,
+      "tempo_type": 3
+    },
+    "8:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 41,
+      "followed_by_coda_frequency": 0.926829268292683,
+      "followed_by_different_speaker_frequency": 0.6097560975609756,
+      "median_time_to_following_coda_seconds": 3.468349999999191,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 23,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 4,
+          "rhythm_family": "6R",
+          "rhythm_family_id": 8
+        },
+        {
+          "count": 3,
+          "rhythm_family": "7D family",
+          "rhythm_family_id": 10
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 20,
+        "frequency": 0.4878048780487805,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3902439024390244,
+        "middle": 0.34146341463414637,
+        "opening": 0.2682926829268293
+      },
+      "preceded_by_different_speaker_frequency": 0.5853658536585366,
+      "rhythm_family_id": 8,
+      "tempo_type": 4
+    },
+    "9:0": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 12,
+      "followed_by_coda_frequency": 0.8333333333333334,
+      "followed_by_different_speaker_frequency": 0.4166666666666667,
+      "median_time_to_following_coda_seconds": 4.354999999999563,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 6,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 1,
+          "rhythm_family": "9i",
+          "rhythm_family_id": 15
+        },
+        {
+          "count": 1,
+          "rhythm_family": "6i",
+          "rhythm_family_id": 9
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 7,
+        "frequency": 0.5833333333333334,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.3333333333333333,
+        "middle": 0.08333333333333333,
+        "opening": 0.5833333333333334
+      },
+      "preceded_by_different_speaker_frequency": 0.3333333333333333,
+      "rhythm_family_id": 9,
+      "tempo_type": 0
+    },
+    "9:1": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 1,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.0,
+      "median_time_to_following_coda_seconds": 5.697099999999409,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 1,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 1,
+        "frequency": 1.0,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.0,
+        "middle": 0.0,
+        "opening": 1.0
+      },
+      "preceded_by_different_speaker_frequency": 1.0,
+      "rhythm_family_id": 9,
+      "tempo_type": 1
+    },
+    "9:2": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 7,
+      "followed_by_coda_frequency": 1.0,
+      "followed_by_different_speaker_frequency": 0.42857142857142855,
+      "median_time_to_following_coda_seconds": 1.4500749999999698,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 3,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        },
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 2,
+          "rhythm_family": "7i",
+          "rhythm_family_id": 11
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 5,
+        "frequency": 0.7142857142857143,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.2857142857142857,
+        "middle": 0.5714285714285714,
+        "opening": 0.14285714285714285
+      },
+      "preceded_by_different_speaker_frequency": 0.2857142857142857,
+      "rhythm_family_id": 9,
+      "tempo_type": 2
+    },
+    "9:3": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 5,
+      "followed_by_coda_frequency": 0.8,
+      "followed_by_different_speaker_frequency": 0.4,
+      "median_time_to_following_coda_seconds": 1.7940499999999702,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 2,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 2,
+          "rhythm_family": "5R family",
+          "rhythm_family_id": 6
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 4,
+        "frequency": 0.8,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.2,
+        "middle": 0.6,
+        "opening": 0.2
+      },
+      "preceded_by_different_speaker_frequency": 0.6,
+      "rhythm_family_id": 9,
+      "tempo_type": 3
+    },
+    "9:4": {
+      "chorusing_change": {
+        "available": false,
+        "reason": "The paper reports an aggregate association, but the repository does not provide a validated per-row chorusing-change label."
+      },
+      "example_count": 8,
+      "followed_by_coda_frequency": 0.75,
+      "followed_by_different_speaker_frequency": 0.5,
+      "median_time_to_following_coda_seconds": 2.7095500000007178,
+      "most_common_next_rhythm_patterns": [
+        {
+          "count": 3,
+          "rhythm_family": "1+1+3",
+          "rhythm_family_id": 5
+        },
+        {
+          "count": 2,
+          "rhythm_family": "4R family",
+          "rhythm_family_id": 3
+        },
+        {
+          "count": 1,
+          "rhythm_family": "6i",
+          "rhythm_family_id": 9
+        }
+      ],
+      "ornamentation": {
+        "available": true,
+        "count": 5,
+        "frequency": 0.625,
+        "status": "row-aligned repository-derived annotation"
+      },
+      "position_frequencies": {
+        "ending": 0.375,
+        "middle": 0.5,
+        "opening": 0.125
+      },
+      "preceded_by_different_speaker_frequency": 0.375,
+      "rhythm_family_id": 9,
+      "tempo_type": 4
+    }
+  },
+  "exchange_counts": {
+    "all": 364,
+    "multi_coda": 309
+  },
+  "grouping": {
+    "exchange_boundary": "gap between consecutive coda onsets greater than or equal to 8 seconds",
+    "important_note": "The notebooks use the same six-character key and eight-second window for speaker-specific call sequences. This index applies the disclosed eight-second boundary across all speakers to support multi-speaker exchange statistics; this is a dataset-derived operational definition, not a semantic annotation.",
+    "ordering": "ascending TsTo within recording key",
+    "position_bins": "normalized row position: <=1/3 opening, >=2/3 ending, otherwise middle",
+    "recording_key": "first six characters of REC, matching repository notebooks"
+  },
+  "schema_version": 1,
+  "scope": {
+    "excluded_over_10_clicks": 153,
+    "excluded_under_3_clicks": 14,
+    "included_rows": 3673
+  },
+  "source": {
+    "doi": "https://doi.org/10.5281/zenodo.10817697",
+    "files": {
+      "ornaments.p": {
+        "sha256": "8e37ba3e6ee9938286cc255be0a5fd07067fd8aa4b0393c8978e9968c1655f1d"
+      },
+      "rhythms.p": {
+        "sha256": "cd204bef55e7c296ac7f035babfc71b0e34ee8f81ad286c3e430186bc9f2238b"
+      },
+      "sperm-whale-dialogues.csv": {
+        "sha256": "1856c8bf915cc5ae6f928aaa2036cbbc6ad8840bb6e4f6a96aaeb96953215da2"
+      }
+    },
+    "license": "CC BY 4.0"
+  }
+}

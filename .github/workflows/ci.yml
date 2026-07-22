@@ -1,0 +1,53 @@
+name: Local-only validation
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  frontend:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - name: Install locked frontend dependencies
+        working-directory: frontend
+        run: npm ci
+      - name: Frontend tests
+        working-directory: frontend
+        run: npm test
+      - name: TypeScript type-check
+        working-directory: frontend
+        run: npm run type-check
+      - name: Frontend production build
+        working-directory: frontend
+        run: npm run build
+      - name: Check production bundle for credential material
+        run: python3 scripts/release_checks.py --bundle-only
+
+  backend-and-release-hygiene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Pure local backend tests
+        env:
+          PYTHONPATH: backend
+        run: python3 -m unittest discover -s backend -p 'test_*.py'
+      - name: Python syntax validation
+        run: python3 -m compileall -q backend scripts
+      - name: Secret, history, environment, audio, and checkpoint checks
+        run: python3 scripts/release_checks.py --history

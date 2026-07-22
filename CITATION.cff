@@ -1,0 +1,47 @@
+cff-version: 1.2.0
+message: "If you use Whale Acoustic Lab, cite this software and the upstream scientific sources listed below."
+title: "Whale Acoustic Lab"
+type: software
+version: 0.1.0
+date-released: 2026-07-21
+license: MIT
+authors:
+  - name: "Whale Acoustic Lab contributors"
+repository-code: "https://github.com/sabbivikas/whale-acoustic-lab"
+abstract: >-
+  A browser and backend research interface for evidence-bounded exploration of
+  sperm-whale click timing, probable codas, acoustic embeddings, researcher
+  annotations, evaluation, corpus comparison, and deterministic art.
+keywords:
+  - bioacoustics
+  - sperm whale
+  - annotation
+  - acoustic embeddings
+  - reproducible research
+references:
+  - type: conference-paper
+    title: "Towards A Translative Model of Sperm Whale Vocalization"
+    authors:
+      - name: "Orr Paradise"
+      - name: "Pranav Muralikrishnan"
+      - name: "Liangyuan Chen"
+      - name: "Hugo Flores Garcia"
+      - name: "Bryan Pardo"
+      - name: "Roee Diamant"
+      - name: "David F. Gruber"
+      - name: "Shane Gero"
+      - name: "Shafi Goldwasser"
+    year: 2025
+    conference:
+      name: "Advances in Neural Information Processing Systems"
+  - type: article
+    title: "Contextual and combinatorial structure in sperm whale vocalisations"
+    doi: "10.1038/s41467-024-47221-8"
+    year: 2024
+  - type: software
+    title: "Dataset and Codebase for paper on Contextual and Combinatorial Structure in Sperm Whale Vocalisations"
+    authors:
+      - name: "Pratyusha Sharma"
+    doi: "10.5281/zenodo.10817697"
+    year: 2024
+    license: CC-BY-4.0

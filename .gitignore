@@ -1,0 +1,85 @@
+# Environment and credentials
+.env
+.env.*
+!.env.example
+!**/.env.example
+
+# JavaScript / TypeScript
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# Python
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+.venv/
+venv/
+
+# Service state
+.modal/
+.vercel/
+
+# Model artifacts and checkpoints (WhAM weights are separately licensed)
+*.pth
+*.pt
+*.ckpt
+*.safetensors
+*.onnx
+*.h5
+*.weights
+checkpoints/
+models/
+
+# Local audio. The one attributed public sample is deliberately allowed.
+*.wav
+*.wave
+*.mp3
+*.m4a
+*.flac
+!frontend/public/samples/dswp-1.wav
+
+# EC1 source tables/pickles pending authoritative redistribution terms
+references/coda_code/source/
+
+# The three runtime-derived CC BY 4.0 indexes and their provenance are public.
+!references/coda_code/rhythm_reference_index.json
+!references/coda_code/dialogue_context_index.json
+!references/coda_code/segmentation_thresholds.json
+!references/coda_code/provenance.json
+
+# Research, evaluation, corpus, and annotation exports
+research-exports/
+evaluation-exports/
+corpus-exports/
+annotation-packages/
+*_research-package.json
+*_annotations.csv
+*_raven-clicks.txt
+*_raven-codas.txt
+*_evaluation.json
+*_evaluation.csv
+*_corpus-summary.json
+*_recordings.csv
+*_similarities.csv
+*_outlier-review.csv
+
+# Temporary and editor files
+tmp/
+temp/
+*.tmp
+*.temp
+*.swp
+*.swo
+*~
+.idea/
+.vscode/
+
+# Operating-system files
+.DS_Store
+Thumbs.db

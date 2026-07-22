@@ -1,0 +1,73 @@
+{
+  "schema_version": 1,
+  "source_release": {
+    "title": "Dataset and Codebase for paper on Contextual and Combinatorial Structure in Sperm Whale Vocalisations",
+    "creator": "Pratyusha Sharma",
+    "doi": "10.5281/zenodo.10817697",
+    "url": "https://zenodo.org/records/10817697",
+    "license": "CC BY 4.0",
+    "license_url": "https://creativecommons.org/licenses/by/4.0/",
+    "published_date": "2024-03-14",
+    "accessed_date": "2026-07-22",
+    "scope_note": "Authority is the DOI-pinned Zenodo archive, not unrelated future GitHub revisions."
+  },
+  "paper": {
+    "title": "Contextual and combinatorial structure in sperm whale vocalisations",
+    "authors": [
+      "Pratyusha Sharma",
+      "Shane Gero",
+      "Roger Payne",
+      "David F. Gruber",
+      "Daniela Rus",
+      "Antonio Torralba",
+      "Jacob Andreas"
+    ],
+    "doi": "10.1038/s41467-024-47221-8",
+    "year": 2024
+  },
+  "source_files": [
+    {
+      "filename": "DominicaCodas.csv",
+      "sha256": "53dd44fbfb0040da93656aa44883954f3abe18dd6539e90c625af86a96db6b45",
+      "publication_status": "excluded_build_input"
+    },
+    {
+      "filename": "sperm-whale-dialogues.csv",
+      "sha256": "1856c8bf915cc5ae6f928aaa2036cbbc6ad8840bb6e4f6a96aaeb96953215da2",
+      "publication_status": "excluded_build_input"
+    },
+    {
+      "filename": "rhythms.p",
+      "sha256": "cd204bef55e7c296ac7f035babfc71b0e34ee8f81ad286c3e430186bc9f2238b",
+      "publication_status": "excluded_build_input"
+    },
+    {
+      "filename": "ornaments.p",
+      "sha256": "8e37ba3e6ee9938286cc255be0a5fd07067fd8aa4b0393c8978e9968c1655f1d",
+      "publication_status": "excluded_build_input"
+    }
+  ],
+  "derived_files": [
+    {
+      "filename": "rhythm_reference_index.json",
+      "sha256": "1b199b48bf4719f43b451f433c50b006441894661cf2822c1118ff5ae8c25be4",
+      "generator": "backend/build_coda_code_index.py",
+      "generated_at_local": "2026-07-20T01:00:39-05:00",
+      "publication_status": "approved_required_runtime_derivative"
+    },
+    {
+      "filename": "dialogue_context_index.json",
+      "sha256": "27bb79e4f5b5189dbd9d87f1195a25fe7b7c99e272339ee21c4f303a0786a65f",
+      "generator": "backend/build_coda_code_index.py",
+      "generated_at_local": "2026-07-20T01:00:39-05:00",
+      "publication_status": "approved_required_runtime_derivative"
+    },
+    {
+      "filename": "segmentation_thresholds.json",
+      "sha256": "ff8813df7e4cf93997ef0704a1ccdec776d19fae938a599dc3aa892422df17ef",
+      "generator": "backend/build_segmentation_thresholds.py",
+      "generated_at_local": "2026-07-20T00:11:32-05:00",
+      "publication_status": "approved_required_runtime_derivative"
+    }
+  ]
+}
