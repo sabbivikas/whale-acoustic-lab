@@ -55,7 +55,7 @@ class AudioDecodeTests(unittest.TestCase):
         self.assert_normalized(float32_wav())
 
     def test_existing_16_bit_wav(self) -> None:
-        fixture = Path(__file__).resolve().parents[1] / "references" / "audio" / "1.wav"
+        fixture = Path(__file__).resolve().parents[1] / "frontend" / "public" / "samples" / "dswp-1.wav"
         decoded = decode_wav_to_pcm16_mono(fixture.read_bytes())
         self.assertEqual(decoded.channels, 1)
         self.assertEqual(decoded.bit_depth, 16)
