@@ -4,9 +4,15 @@ Audit updated: 2026-07-23. This repository remains private.
 
 ## Verdict
 
-**Private CI candidate; not yet safe for public release.**
+**Safe to make the code repository public after the repository owner performs
+the visibility-switch checklist below. The hosted production service has
+separate unresolved launch requirements.**
 
-The EC1 license/provenance blocker remains resolved. Dependency, SBOM, privacy, and retention documentation now exists, and release checks enforce the core data boundary. Public release remains blocked by the manual and legal items below.
+The EC1 license/provenance blocker remains resolved. Ownership, contribution,
+governance, private reporting instructions, dependency/SBOM records, privacy
+and retention policy, reviewed screenshots, and local release checks are now
+present. Model weights, raw EC1 build inputs, private audio, exports, secrets,
+and deployment state remain excluded.
 
 ## EC1 provenance and publication boundary
 
@@ -61,9 +67,9 @@ From that clean tree:
 
 - Redacted working-tree credential scan: passed.
 - Production frontend bundle credential scan: passed.
-- Git history scan: passed across the two existing commits before this policy update.
+- Git history scan: passed across the complete pre-release history.
 - Staged files: zero.
-- Tracked files reviewed before this policy update: 105.
+- Tracked-file publication policy: passed.
 - Model/checkpoint files in worktree: zero.
 - Required EC1 publication inventory: passed.
 - Raw EC1 source files in publishable inventory: zero.
@@ -91,7 +97,7 @@ From that clean tree:
 
 ## License inventory
 
-- Original Whale Acoustic Lab code: MIT, subject to final copyright-owner/contributor confirmation.
+- Original Whale Acoustic Lab code: MIT; copyright © 2026 Vikas Sabbi.
 - EC1 DOI-pinned archive and the three modified derived indexes: CC BY 4.0.
 - DSWP bundled public sample: CC BY 4.0.
 - Project CETI WhAM source: MIT at the pinned source repository/commit.
@@ -130,13 +136,50 @@ The lazy Three.js homepage chunk remains approximately 540 kB minified / 137 kB 
 
 The sole approved bundled audio is `frontend/public/samples/dswp-1.wav`, with DSWP attribution and checksum metadata.
 
-## Remaining public-release blockers
+## Code-repository visibility checklist
 
-1. Confirm the final copyright holder and contributor agreement for the project’s MIT license.
-2. Establish a monitored private security and conduct-reporting contact before public participation.
-3. Add reviewed screenshots created only with the attributed public sample or synthetic data.
-4. Capture and review the exact deployed Modal image inventory: base identity, Debian/APT packages, FFmpeg build, complete `pip freeze`/hashes, torch CUDA build, CUDA runtime, and driver.
-5. Manually verify and record production Modal, OpenAI, and Vercel dashboard settings; operator-test cache deletion and periodic expired-file cleanup.
-6. Complete legal review of WhAM checkpoint use for the intended service; commercial operators must obtain their own permission or other valid legal basis.
+GitHub does not permit Private Vulnerability Reporting to be enabled while a
+repository is private. When Vikas Sabbi intentionally changes visibility:
 
-These items do not prevent continued private CI. They must be completed or explicitly resolved before marking the repository safe for public release.
+1. confirm the release commit and successful GitHub Actions run;
+2. change only the code repository visibility;
+3. immediately enable GitHub Private Vulnerability Reporting under
+   `Settings → Code security and analysis`;
+4. verify the `Report a vulnerability` action appears under Security
+   Advisories; and
+5. keep Modal and Vercel undeployed or unchanged unless their separate launch
+   gates have been satisfied.
+
+There is no remaining code-level licensing, provenance, screenshot, secret, or
+tracked-file blocker identified by this audit. The repository must remain
+private until the owner deliberately performs the checklist.
+
+## GitHub Actions compatibility
+
+The workflow now uses the officially supported Node 24 generations:
+
+- [`actions/checkout@v7`](https://github.com/actions/checkout/releases)
+- [`actions/setup-node@v7`](https://github.com/actions/setup-node/releases)
+- [`actions/setup-python@v7`](https://github.com/actions/setup-python/releases)
+
+This replaces the older action generations responsible for the GitHub Actions
+Node.js deprecation warning. The major-version tags are verified by the local
+release checker and must also pass GitHub-hosted CI before the repository
+visibility changes.
+
+## Hosted production-service blockers
+
+These do **not** block publishing the source repository because checkpoints and
+provider configuration are excluded, but they do block representing a hosted
+service as fully production-cleared:
+
+1. Complete legal review of WhAM checkpoint use for the intended hosted
+   service. The published weight terms are CC BY-NC-ND 4.0; commercial
+   operators must obtain their own permission or another valid legal basis.
+2. Capture and review the exact deployed Modal image inventory: base image,
+   Debian/APT packages, FFmpeg build, complete Python/transitive dependency
+   inventory, torch CUDA build, CUDA runtime, and driver.
+3. Manually verify and record Modal, OpenAI, and Vercel dashboard logging,
+   retention, collaborator, analytics, and data-control settings.
+4. Operator-test targeted narration-cache deletion and scheduled expired-entry
+   cleanup in the authorized private production environment.

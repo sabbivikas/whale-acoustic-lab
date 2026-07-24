@@ -10,10 +10,11 @@ from __future__ import annotations
 import argparse
 import hashlib
 import re
+import struct
 import subprocess
 import sys
 from pathlib import Path
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,7 +40,21 @@ REQUIRED_POLICY_FILES = {
     "DATA_RETENTION.md",
     "WHAM_WEIGHTS.md",
     "backend/WAVEBEAT_AUDIT.md",
+    "COPYRIGHT.md",
+    "CONTRIBUTORS.md",
+    "GOVERNANCE.md",
+    "SECURITY.md",
+    "CODE_OF_CONDUCT.md",
+    "docs/SCREENSHOT_PROVENANCE.md",
 }
+REQUIRED_SCREENSHOTS = {
+    "docs/screenshots/homepage-ocean.png": (1158, 772),
+    "docs/screenshots/call-story.png": (1158, 772),
+    "docs/screenshots/research-mode.png": (1158, 772),
+    "docs/screenshots/annotation-evaluation.png": (1158, 772),
+    "docs/screenshots/corpus-explorer.png": (1158, 772),
+}
+MAX_SCREENSHOT_BYTES = 5 * 1024 * 1024
 MODEL_SUFFIXES = {".pth", ".pt", ".ckpt", ".safetensors", ".onnx", ".h5", ".weights"}
 BINARY_SUFFIXES = {
     ".wav", ".wave", ".mp3", ".m4a", ".flac", ".png", ".jpg", ".jpeg",
@@ -253,6 +268,69 @@ def validate_license_inventory() -> list[tuple[str, str]]:
     return findings
 
 
+def validate_screenshots() -> list[tuple[str, str]]:
+    findings: list[tuple[str, str]] = []
+    screenshot_directory = ROOT / "docs" / "screenshots"
+    actual = {
+        relative(path)
+        for path in screenshot_directory.glob("*")
+        if path.is_file()
+    } if screenshot_directory.is_dir() else set()
+    expected = set(REQUIRED_SCREENSHOTS)
+    for name in sorted(expected - actual):
+        findings.append(("required release screenshot missing", name))
+    for name in sorted(actual - expected):
+        findings.append(("unreviewed screenshot present", name))
+    for name, dimensions in REQUIRED_SCREENSHOTS.items():
+        path = ROOT / name
+        if not path.is_file():
+            continue
+        data = path.read_bytes()
+        if len(data) >= MAX_SCREENSHOT_BYTES:
+            findings.append(("release screenshot is 5 MB or larger", name))
+        if len(data) < 24 or data[:8] != b"\x89PNG\r\n\x1a\n":
+            findings.append(("release screenshot is not a valid PNG", name))
+            continue
+        width, height = struct.unpack(">II", data[16:24])
+        if (width, height) != dimensions:
+            findings.append(("release screenshot dimensions changed", f"{name}: {width}x{height}"))
+        if width * 2 != height * 3:
+            findings.append(("release screenshot is not exactly 3:2", f"{name}: {width}x{height}"))
+    provenance = ROOT / "docs" / "SCREENSHOT_PROVENANCE.md"
+    if provenance.is_file():
+        text = provenance.read_text(encoding="utf-8")
+        for name in sorted(expected):
+            if Path(name).name not in text:
+                findings.append(("screenshot missing from provenance record", name))
+        for marker in ("No production backend access", "synthetic", "No private recordings"):
+            if marker.lower() not in text.lower():
+                findings.append(("screenshot provenance boundary missing", marker))
+    return findings
+
+
+def validate_markdown_links() -> list[tuple[str, str]]:
+    findings: list[tuple[str, str]] = []
+    link_pattern = re.compile(r"!?\[[^\]]*]\(([^)]+)\)")
+    for path in sorted(ROOT.rglob("*.md")):
+        if any(part in SKIP_PARTS for part in path.parts):
+            continue
+        text = path.read_text(encoding="utf-8", errors="ignore")
+        for raw_target in link_pattern.findall(text):
+            target = raw_target.strip().split(maxsplit=1)[0].strip("<>")
+            if not target or target.startswith(("#", "http://", "https://")):
+                continue
+            local = unquote(target.split("#", 1)[0])
+            resolved = (path.parent / local).resolve()
+            try:
+                resolved.relative_to(ROOT)
+            except ValueError:
+                findings.append(("Markdown link leaves repository", f"{relative(path)}: {target}"))
+                continue
+            if not resolved.exists():
+                findings.append(("broken local Markdown link", f"{relative(path)}: {target}"))
+    return findings
+
+
 def validate_dependency_and_privacy_inventory() -> list[tuple[str, str]]:
     findings: list[tuple[str, str]] = []
     for name in sorted(REQUIRED_POLICY_FILES):
@@ -363,6 +441,9 @@ def validate_ci_configuration() -> list[tuple[str, str]]:
     for marker in required:
         if marker not in text:
             findings.append(("missing CI validation command", marker))
+    for marker in ("actions/checkout@v7", "actions/setup-node@v7", "actions/setup-python@v7"):
+        if marker not in text:
+            findings.append(("current Node 24 GitHub Action missing", marker))
     forbidden = (
         "modal run", "modal serve", "modal deploy", "wham_compat_test",
         "build_reference_index", "build_coda_code_index", "build_segmentation_thresholds",
@@ -401,6 +482,8 @@ def main() -> int:
     ok &= report("worktree contains no model checkpoints", validate_checkpoint_worktree())
     ok &= report("EC1 publishable-file inventory", validate_publishable_ec1_inventory())
     ok &= report("license and provenance inventory", validate_license_inventory())
+    ok &= report("release screenshots and provenance", validate_screenshots())
+    ok &= report("local Markdown links", validate_markdown_links())
     ok &= report("dependency and privacy inventory", validate_dependency_and_privacy_inventory())
     ok &= report("frontend contains no backend-only credential names", validate_frontend_secret_boundary())
     ok &= report("CI configuration is local-only and complete", validate_ci_configuration())

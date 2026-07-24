@@ -6,7 +6,9 @@ version: 0.1.0
 date-released: 2026-07-21
 license: MIT
 authors:
-  - name: "Whale Acoustic Lab contributors"
+  - family-names: "Sabbi"
+    given-names: "Vikas"
+    alias: "sabbivikas"
 repository-code: "https://github.com/sabbivikas/whale-acoustic-lab"
 abstract: >-
   A browser and backend research interface for evidence-bounded exploration of

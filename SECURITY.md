@@ -2,7 +2,27 @@
 
 ## Reporting a vulnerability
 
-Do not open a public issue for credentials, private recordings, annotation leakage, authentication problems, or a vulnerability that could expose a deployed service. Before the repository is public, contact the maintainer privately. After publication, enable GitHub private vulnerability reporting and use it as the primary channel.
+Do not open a public issue for credentials, private recordings, annotation
+leakage, authentication problems, or a vulnerability that could expose a
+deployed service.
+
+### While the repository is private
+
+Repository collaborators should open a **draft GitHub Security Advisory** under
+`Security → Advisories → New draft security advisory`. Do not put sensitive
+details in an Issue, pull request, Discussion, or commit message.
+
+### Before and after the repository becomes public
+
+GitHub supports Private Vulnerability Reporting for public repositories, not
+private repositories. Immediately before changing repository visibility, Vikas
+Sabbi must enable it under:
+
+`Settings → Code security and analysis → Private vulnerability reporting`
+
+After it is enabled, use `Security → Advisories → Report a vulnerability`.
+This is the project’s private reporting channel. No personal reporting email is
+published.
 
 Include a minimal description, affected component, reproduction steps, and impact. Do not include real user audio, annotations, credentials, or destructive proof-of-concept data.
 
@@ -32,4 +52,6 @@ See [PRIVACY.md](PRIVACY.md), [DATA_RETENTION.md](DATA_RETENTION.md), and [DEPEN
 
 ## Supported versions
 
-Until the first tagged release, only the current default branch is supported. Security fixes will be documented in release notes after versioned releases begin.
+Until the first tagged release, only the current default branch is supported.
+Security fixes will be documented in release notes after versioned releases
+begin.

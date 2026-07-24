@@ -20,7 +20,21 @@ Harassment, sexualized language or attention, threats, stalking, doxxing, delibe
 
 ## Enforcement
 
-Report conduct concerns privately to the project maintainer. Before public release, establish and publish a monitored conduct-reporting address. Maintainers may remove, edit, or reject contributions and may temporarily or permanently restrict participation when behavior is inappropriate, threatening, or harmful.
+Do not place sensitive conduct reports in a public Issue, pull request, or
+Discussion.
+
+- While the repository is private, collaborators should open a draft GitHub
+  Security Advisory and prefix the title with `Conduct report`.
+- Before public participation begins, Vikas Sabbi must enable GitHub Private
+  Vulnerability Reporting. Afterward, use
+  `Security → Advisories → Report a vulnerability` and prefix the report title
+  with `Conduct report`.
+
+This repository channel keeps the report private without publishing a personal
+email address. Reports are reviewed by the project maintainer, Vikas Sabbi.
+The maintainer may remove, edit, or reject contributions and may temporarily or
+permanently restrict participation when behavior is inappropriate,
+threatening, or harmful.
 
 ## Attribution
 

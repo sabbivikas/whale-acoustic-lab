@@ -4,6 +4,13 @@ Whale Acoustic Lab is an evidence-bounded product and researcher workspace for e
 
 > Scientists have not literally translated sperm-whale language. This project analyzes acoustic structure. Its family matches, conversational-role hypotheses, model-space neighbors, and musical analogies are limited comparisons—not statements of meaning, identity, intent, emotion, clan, or dialect.
 
+Original Whale Acoustic Lab code is copyright © 2026 Vikas Sabbi and released
+under the MIT License. Development used AI coding assistance; AI systems are
+tools, not copyright owners or project contributors. Third-party data, derived
+indexes, fonts, model source, and model weights retain their separate licenses.
+See [COPYRIGHT.md](COPYRIGHT.md), [CONTRIBUTORS.md](CONTRIBUTORS.md), and
+[THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md).
+
 ## Product experience
 
 The public experience provides three immediate paths:
@@ -53,15 +60,19 @@ Corpus Explorer imports multiple Whale Acoustic Lab research-package JSON files 
 
 ## Screenshots
 
-Release screenshots must use the attributed public sample or synthetic test data—never private recordings or researcher annotations. Before publishing the repository, add reviewed captures for:
+All data-bearing screenshots below use clearly labeled synthetic data and no
+production backend. See [SCREENSHOT_PROVENANCE.md](docs/SCREENSHOT_PROVENANCE.md)
+for dimensions, capture method, data boundaries, and attribution.
 
-1. the 1440 px homepage and procedural whale;
-2. the public analysis result;
-3. Research Mode waveform/spectrogram editing;
-4. Annotation Evaluation; and
-5. Corpus Explorer PCA/similarity views.
+| Cinematic homepage | Measured Call Story |
+|---|---|
+| ![Whale Acoustic Lab homepage with a procedural sperm whale moving through a dark teal ocean above three analysis actions](docs/screenshots/homepage-ocean.png) | ![Synthetic Call Story showing three probable codas, measured durations, and the coda sequence timeline](docs/screenshots/call-story.png) |
 
-No screenshot files are currently included; this is tracked as a publication task rather than filling the README with stale or private captures.
+| Research Mode | Annotation Evaluation |
+|---|---|
+| ![Research Mode displaying a synchronized synthetic waveform, spectrogram, click markers, and editable coda regions](docs/screenshots/research-mode.png) | ![Annotation Evaluation comparing synthetic automatic and review-set click markers and coda regions](docs/screenshots/annotation-evaluation.png) |
+
+![Corpus Explorer model-space comparison using six clearly labeled synthetic demo recordings](docs/screenshots/corpus-explorer.png)
 
 ## Architecture
 
@@ -154,4 +165,9 @@ Read [SCIENTIFIC_LIMITATIONS.md](SCIENTIFIC_LIMITATIONS.md) before interpreting 
 
 Use [CITATION.cff](CITATION.cff) for this software and cite the upstream WhAM and EC1 research sources appropriate to your use. Original Whale Acoustic Lab code is MIT-licensed. EC1-derived runtime indexes and the DSWP sample are CC BY 4.0; WhAM source and weights retain separate terms. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and the [EC1 attribution](references/coda_code/ATTRIBUTION.md).
 
-The repository remains private. Complete the administrative, dependency-image, legal, and production-dashboard items in [PUBLICATION_AUDIT.md](PUBLICATION_AUDIT.md) before making it public.
+Vikas Sabbi is the project owner and maintainer. Governance and private
+reporting instructions are in [GOVERNANCE.md](GOVERNANCE.md),
+[SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
+The repository remains private while this release package is validated. Code
+repository and hosted-service release boundaries are separated in
+[PUBLICATION_AUDIT.md](PUBLICATION_AUDIT.md).
