@@ -15,7 +15,7 @@ details in an Issue, pull request, Discussion, or commit message.
 ### Before and after the repository becomes public
 
 GitHub supports Private Vulnerability Reporting for public repositories, not
-private repositories. Immediately before changing repository visibility, Vikas
+private repositories. Immediately after changing repository visibility, Vikas
 Sabbi must enable it under:
 
 `Settings → Code security and analysis → Private vulnerability reporting`
