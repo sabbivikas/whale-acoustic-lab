@@ -1,11 +1,15 @@
 # Architecture and trust boundaries
 
-## Browser to analysis service
+## Public static and optional analysis flows
 
 ```mermaid
 flowchart LR
-    U["User chooses sample, upload, or Listen Live"] --> B["Vite browser app"]
-    B -->|"Explicit POST /analyze with WAV"| M["Modal FastAPI boundary"]
+    U["User chooses a mode"] --> B["Static Vite browser app"]
+    B -->|"Public Demo"| P["Bundled DSWP WAV + versioned result JSON"]
+    B -->|"Default upload / Listen Live"| L["Web Audio + local timing analysis"]
+    B -->|"Only after explicit BYO connection"| M["Researcher-operated compatible backend"]
+    P --> UI["Call Story + Research + Evaluation + Corpus + Art"]
+    L --> UI
     M --> D["Decode + boundary trim"]
     D --> C["Waveform click estimates"]
     C --> S["Probable-coda segmentation + EC1 timing comparison"]
@@ -18,10 +22,14 @@ flowchart LR
     G --> O
     F --> O
     S --> O
-    O --> B
+    O --> UI
 ```
 
-Only an explicit analysis action sends audio. The backend temporarily writes decoded/trimmed WAV files for processing and removes them in `finally` blocks. Deployed provider logs, volumes, and retention settings remain operational responsibilities.
+The public sample and browser-only paths make no analysis API request. Only an
+explicitly configured researcher backend causes later analysis actions to send
+audio. The backend temporarily writes decoded/trimmed WAV files for processing
+and removes them in `finally` blocks. Provider logs, volumes, costs, licenses,
+and retention settings remain the researcher/operator’s responsibility.
 
 The GPT branch receives the return value of `compact_evidence(...)`, an explicit whitelist containing calculated coda timing, cautious published-family comparisons, and bounded role evidence. It does not receive raw audio, full WhAM embeddings, filenames, or research annotations. The Responses call sets `store=False`.
 
@@ -71,9 +79,10 @@ Imported packages are not uploaded. IndexedDB persistence is opt-in and can be d
 
 ```mermaid
 flowchart TB
-    subgraph Public["Public frontend / Vercel"]
-      URL["VITE_WHAM_API_URL: public origin only"]
-      APP["Static HTML, CSS, JS, public sample"]
+    subgraph Public["Zero-cost public frontend / Vercel"]
+      APP["Static HTML, CSS, JS, public WAV + precomputed JSON"]
+      LOCAL["Web Audio local analyzer"]
+      BYO["Optional backend URL in browser localStorage"]
     end
     subgraph Modal["Modal trusted backend"]
       API["FastAPI app"]
@@ -86,8 +95,7 @@ flowchart TB
       IDX["License-cleared static indexes"]
       NOWEIGHTS["No credentials or checkpoints"]
     end
-    URL --> API
-    APP --> API
+    BYO -->|"Only after explicit researcher connection"| API
     OS --> API
     WV --> API
     NC --> API
@@ -102,7 +110,9 @@ flowchart TB
 ```mermaid
 flowchart LR
     U["User action"] --> Q{"Operation"}
-    Q -->|"Submit audio"| PAID["Remote analysis boundary"]
+    Q -->|"Explicitly connected BYO backend"| PAID["Researcher-operated remote analysis"]
+    Q -->|"Public sample"| STATIC["Same-origin static assets"]
+    Q -->|"Default upload / microphone"| LOCAL["Browser-only CPU work"]
     PAID --> GPU["WhAM GPU inference"]
     PAID --> GPT["Optional GPT narration"]
     Q -->|"Edit annotations"| LOCAL["Browser-only CPU work"]
@@ -112,7 +122,9 @@ flowchart LR
     Q -->|"Render homepage/art"| LOCAL
 ```
 
-The first branch can incur infrastructure/model-provider cost. The second branch must remain local and requires no Modal, GPU, WhAM, OpenAI, or paid API call.
+Only the researcher-operated branch can incur infrastructure/model-provider
+cost. The static and local branches require no Modal, GPU, WhAM, OpenAI, or
+paid API call.
 
 ## Frontend lifecycle
 
@@ -122,7 +134,8 @@ The public controls render independently of the Three.js chunk. An intersection-
 
 | Data | Location | Network behavior |
 |---|---|---|
-| Selected/recorded audio | Browser memory, then explicit analysis request | Sent only to configured `/analyze` endpoint after user action. |
+| Selected/recorded audio | Browser memory | Stays local by default; sent only after an explicit BYO backend connection and later analysis action. |
+| BYO backend URL | Browser localStorage | Never compiled into the site; no API key is requested. |
 | Backend temporary WAV | Ephemeral container filesystem | Local to analysis container; deleted after request. |
 | WhAM weights | Private Modal volume | Never sent to browser or stored in Git. |
 | Narration evidence | Backend compact JSON | Optional OpenAI request; excludes raw audio, embedding, filename, and researcher notes. |

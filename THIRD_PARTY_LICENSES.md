@@ -64,6 +64,16 @@ Those raw inputs remain ignored and are not approved for publication because the
 - `references/coda_code/dialogue_context_index.json`
 - `references/coda_code/segmentation_thresholds.json`
 
+The static browser analyzer includes byte-identical, version-labeled copies of
+the two required timing files:
+
+- `frontend/src/data/rhythm-reference-index.v1.json`
+- `frontend/src/data/segmentation-thresholds.v1.json`
+
+They remain modified/derived CC BY 4.0 EC1 material, not MIT-licensed project
+code. The release checker verifies that each copy is byte-identical to its
+attributed file under `references/coda_code/`.
+
 Exact source/derived hashes, transformations, generators, dates, and attribution are in `references/coda_code/ATTRIBUTION.md`, `LICENSE.md`, `PROVENANCE.md`, and `provenance.json`. EC1 material is not MIT-licensed; only the original generation/application code is covered by the root MIT license.
 
 ## Homepage sperm whale

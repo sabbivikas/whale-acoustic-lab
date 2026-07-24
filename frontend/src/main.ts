@@ -3,7 +3,9 @@ import "./passport.css";
 import "./research.css";
 import "./corpus.css";
 import "./home-ocean.css";
-import { analyzeAudio, collapseEmbedding, sha256, type AnalyzeResponse } from "./api";
+import { analyzeWithBackend, collapseEmbedding, sha256, type AnalyzeResponse } from "./api";
+import { analyzeInBrowser, localArtVector } from "./browser-analysis";
+import publicSampleAnalysis from "./data/dswp-1-analysis.v1.json";
 import { deriveParameters } from "./art/parameters";
 import { OceanRenderer } from "./art/canvas";
 import { callStory, friendlyAnalysisError, HOME_ACTIONS, LOADING_STEPS, SAMPLE_RECORDING } from "./experience";
@@ -47,6 +49,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       <h1>Explore the rhythm inside a sperm-whale call.</h1>
       <p class="lede">Upload, record, or try a public sample. Whale Acoustic Lab measures click timing, separates probable codas, and compares acoustic structure with published research.</p>
       <p class="science-promise"><strong>Scientific boundary:</strong> this app analyzes acoustic structure. It does not literally translate whale language.</p>
+      <p class="privacy-promise"><strong>Your recording stays on this device.</strong> Uploads and microphone recordings use transparent browser-only analysis unless you explicitly connect your own backend.</p>
       <p class="model-license-notice"><strong>Noncommercial research and educational demo.</strong> WhAM source is MIT-licensed; its model weights are separately CC BY-NC-ND 4.0.</p>
     </div>
     <div class="capture-stage">
@@ -57,7 +60,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       </div>
       <div id="live-recorder" class="live-recorder hidden">
         <span class="kicker">Live microphone</span><h2>Play a whale recording near your microphone.</h2>
-        <p>Recording stays in this session and is submitted only when you stop.</p>
+        <p>Your recording stays on this device and is analyzed locally when you stop.</p>
         <canvas id="live-waveform"></canvas><strong id="recording-time">00:00.0 / 00:20.0</strong>
         <div><button id="stop-recording" class="primary">Stop & analyze</button><button id="cancel-recording">Cancel</button></div>
       </div>
@@ -65,10 +68,19 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
         <span class="spinner"></span><span class="kicker">Analyzing this recording</span>
         <h2 id="loading-status">Preparing the recording</h2>
         <ol id="loading-steps"></ol>
-        <p>The first analysis can take longer while the WhAM model starts.</p>
+        <p id="loading-note">Transparent timing analysis is running on this device.</p>
       </div>
       <div id="error" class="error-panel hidden" role="alert"><strong>Analysis couldn’t finish</strong><p id="error-message"></p><div><button id="retry-analysis">Try again</button><button class="reset-home">Choose another recording</button></div></div>
     </div>
+    <details class="advanced-backend" id="advanced-backend">
+      <summary>Advanced · bring your own compatible backend</summary>
+      <div class="backend-settings">
+        <div><strong id="analysis-mode-label">Zero-cost browser-only mode</strong><p id="backend-status">No backend is connected. Audio remains on this device.</p></div>
+        <label>Compatible backend URL<input id="backend-url" type="url" inputmode="url" autocomplete="off" placeholder="https://your-backend.example"></label>
+        <div><button id="save-backend" type="button">Use this backend</button><button id="disconnect-backend" type="button">Use browser-only mode</button></div>
+        <small>No API keys are requested or stored. You are responsible for hosting costs, access controls, model/data licenses, and the backend’s data handling.</small>
+      </div>
+    </details>
   </section>
 
   <section id="results" class="results hidden" aria-live="polite">
@@ -78,7 +90,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
   </section>
 
   <section id="art-view" class="art-view hidden">
-    <div class="section-heading"><span class="kicker">Deterministic acoustic artwork</span><h2>The call, mapped into motion</h2><p>The colors, shapes, positions, textures, and motion are deterministically mapped from the WhAM acoustic fingerprint. The artwork is an expressive visualization, not a scientific translation.</p></div>
+    <div class="section-heading"><span class="kicker">Deterministic acoustic artwork</span><h2>The call, mapped into motion</h2><p id="art-description">The artwork is deterministically derived from available acoustic measurements. It is expressive—not a scientific translation.</p></div>
     <div class="art-frame"><canvas id="art"></canvas></div>
     <div class="art-actions"><button id="replay">↺ Replay</button><button id="pause">Ⅱ Pause</button><button id="download" class="primary">↓ Download PNG</button><button class="return-story">Return to Call Story</button></div>
   </section>
@@ -100,7 +112,9 @@ const pauseButton = get<HTMLButtonElement>("#pause"), errorPanel = get<HTMLEleme
 let renderer: OceanRenderer | undefined, audioUrl: string | undefined, microphone: MicrophoneRecorder | undefined;
 let researchWorkspace: ResearchWorkspace | undefined;
 const corpusWorkspace = new CorpusWorkspace(corpusView);
-let liveFrame = 0, liveLimitTimer = 0, loadingTimer = 0, lastFile: File | undefined;
+let liveFrame = 0, liveLimitTimer = 0, loadingTimer = 0, lastFile: File | undefined, lastPreparedResponse: AnalyzeResponse | undefined;
+const BACKEND_STORAGE_KEY = "whale-acoustic-lab:researcher-backend:v1";
+let researcherBackendUrl = localStorage.getItem(BACKEND_STORAGE_KEY) ?? "";
 
 const safe = (value: unknown) => String(value ?? "").replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]!);
 const formatSeconds = (value: number) => `${value.toFixed(3)} s`;
@@ -146,7 +160,8 @@ function renderCallStory(response: AnalyzeResponse): HTMLElement {
 function renderNarration(response: AnalyzeResponse): HTMLElement {
   const narration = response.ai_evidence_narration, content = narration.content, section = document.createElement("section"); section.id = "ai-narration"; section.className = "narration product-section";
   const status = narration.status === "generated" ? "Generated once from calculated evidence" : narration.status === "cache_hit" ? "Validated cached narration" : "Deterministic explanation · OpenAI unavailable or invalid";
-  section.innerHTML = `<div class="evidence-category ai">AI-generated interpretation</div><div class="section-heading"><span class="kicker">AI evidence narration</span><h2>${safe(content.headline)}</h2><span class="narration-status">${safe(status)}</span><p>${safe(content.sequence_explanation)}</p></div><div class="narration-grid"><div><h3>Why it is interesting</h3><p>${safe(content.why_it_is_interesting)}</p><ul>${content.evidence_points.map(point => `<li>${safe(point)}</li>`).join("")}</ul></div><blockquote><small>Creative rhythm analogy · not literal meaning</small>${safe(content.creative_analogy)}</blockquote></div><p class="uncertainty"><strong>What remains unknown:</strong> ${safe(content.uncertainty)}</p>`;
+  const generated = narration.status !== "deterministic_fallback";
+  section.innerHTML = `<div class="evidence-category ${generated ? "ai" : "measured"}">${generated ? "AI-generated interpretation" : "Deterministic measured explanation"}</div><div class="section-heading"><span class="kicker">${generated ? "AI evidence narration" : "Evidence-bounded narration"}</span><h2>${safe(content.headline)}</h2><span class="narration-status">${safe(status)}</span><p>${safe(content.sequence_explanation)}</p></div><div class="narration-grid"><div><h3>Why it is interesting</h3><p>${safe(content.why_it_is_interesting)}</p><ul>${content.evidence_points.map(point => `<li>${safe(point)}</li>`).join("")}</ul></div><blockquote><small>Creative rhythm analogy · not literal meaning</small>${safe(content.creative_analogy)}</blockquote></div><p class="uncertainty"><strong>What remains unknown:</strong> ${safe(content.uncertainty)}</p>`;
   return section;
 }
 
@@ -181,13 +196,15 @@ function renderNeighbors(response: AnalyzeResponse): HTMLElement {
   const section = document.createElement("section"); section.id = "acoustic-neighbors"; section.className = "neighbors product-section";
   section.innerHTML = `<div class="evidence-category published">Compared with published data</div><div class="section-heading"><span class="kicker">Listen to acoustic neighbors</span><h2>Nearby recordings in WhAM model space</h2><p>These are public recordings whose WhAM acoustic fingerprints are closest to your recording. Similarity does not prove shared meaning, identity, or intent.</p></div>`;
   const list = document.createElement("div"); list.className = "neighbor-grid";
-  response.matches.forEach((match, index) => { const card = document.createElement("article"); card.innerHTML = `<span class="rank">${String(index + 1).padStart(2, "0")}</span><h3>${safe(match.reference_id)}</h3><p>${safe(match.original_dswp_filename)} · ${match.duration_seconds.toFixed(2)} seconds</p><dl><dt>Raw similarity</dt><dd>${match.raw_cosine_similarity.toFixed(6)}</dd><dt>Reference percentile</dt><dd>${match.reference_percentile.toFixed(1)}%</dd></dl>`; const player = document.createElement("audio"); player.controls = true; player.preload = "none"; player.src = match.source_url; player.setAttribute("aria-label", `Play reference ${index + 1}`); const source = document.createElement("a"); source.href = match.source_url; source.target = "_blank"; source.rel = "noreferrer"; source.textContent = `Source · ${match.license}`; card.append(player, source); list.append(card); });
+  const matches = response.matches ?? [];
+  matches.forEach((match, index) => { const card = document.createElement("article"); card.innerHTML = `<span class="rank">${String(index + 1).padStart(2, "0")}</span><h3>${safe(match.reference_id)}</h3><p>${safe(match.original_dswp_filename)} · ${match.duration_seconds.toFixed(2)} seconds</p><dl><dt>Raw similarity</dt><dd>${match.raw_cosine_similarity.toFixed(6)}</dd><dt>Reference percentile</dt><dd>${match.reference_percentile.toFixed(1)}%</dd></dl>`; const player = document.createElement("audio"); player.controls = true; player.preload = "none"; player.src = match.source_url; player.setAttribute("aria-label", `Play reference ${index + 1}`); const source = document.createElement("a"); source.href = match.source_url; source.target = "_blank"; source.rel = "noreferrer"; source.textContent = `Source · ${match.license}`; card.append(player, source); list.append(card); });
+  if (!matches.length) list.innerHTML = `<article class="availability-card"><span class="rank">LOCAL</span><h3>WhAM neighbors unavailable</h3><p>${safe(response.availability?.explanation ?? "This result has no WhAM embedding or acoustic-neighbor comparison.")}</p><p>Connect your own compatible backend for full WhAM features. No embedding or neighbor was fabricated.</p></article>`;
   section.append(list); return section;
 }
 
 function renderScience(response: AnalyzeResponse, peaks: number[]): HTMLElement {
   const details = document.createElement("details"); details.id = "science"; details.className = "science product-section";
-  details.innerHTML = `<summary><span><span class="kicker">Explore the science</span><strong>Measurements, matching, and limitations</strong></span><i>＋</i></summary><div class="science-body"><div class="term-grid"><article><h3>Estimated clicks</h3><p>Short high-energy events detected from this waveform. They are estimates, not hand-annotated ground truth.</p></article><article><h3>ICI</h3><p>Inter-click interval: the measured time between neighboring estimated clicks.</p></article><article><h3>Coefficient of variation</h3><p>How much the intervals vary relative to their average. Lower values describe more regular timing.</p></article><article><h3>MSE</h3><p>Mean squared error: the distance between this normalized rhythm and a published family’s average pattern. It is not confidence.</p></article><article><h3>Reference percentile</h3><p>Where a similarity score falls among public reference-to-reference comparisons. It is not a probability.</p></article><article><h3>WhAM fingerprint</h3><p>A 1,280-value model representation of acoustic structure, used for neighbors and deterministic art—not sent to GPT.</p></article></div></div>`;
+  details.innerHTML = `<summary><span><span class="kicker">Explore the science</span><strong>Measurements, matching, and limitations</strong></span><i>＋</i></summary><div class="science-body"><div class="term-grid"><article><h3>Estimated clicks</h3><p>Short high-energy events detected from this waveform. They are estimates, not hand-annotated ground truth.</p></article><article><h3>ICI</h3><p>Inter-click interval: the measured time between neighboring estimated clicks.</p></article><article><h3>Coefficient of variation</h3><p>How much the intervals vary relative to their average. Lower values describe more regular timing.</p></article><article><h3>MSE</h3><p>Mean squared error: the distance between this normalized rhythm and a published family’s average pattern. It is not confidence.</p></article><article><h3>Reference percentile</h3><p>${response.availability?.acoustic_neighbors ? "Where a similarity score falls among public reference-to-reference comparisons. It is not a probability." : "Unavailable because browser-only mode does not create a WhAM embedding."}</p></article><article><h3>WhAM fingerprint</h3><p>${response.availability?.wham_embedding ? "A stored or researcher-backend 1,280-value model representation used for neighbors and deterministic art—not sent to GPT." : "Not generated in browser-only mode. No model or substitute embedding is used."}</p></article></div></div>`;
   const body = details.querySelector<HTMLElement>(".science-body")!; const structure = document.createElement("section"); structure.className = "waveform-science";
   structure.innerHTML = `<h3>Measured waveform and click estimates</h3><p>${safe(response.uploaded_recording.trimming_applied ? `${response.uploaded_recording.original_duration_seconds.toFixed(2)} seconds recorded; ${response.uploaded_recording.analyzed_duration_seconds.toFixed(2)} seconds analyzed after surrounding silence was trimmed.` : "The complete recording was analyzed without trimming surrounding silence.")}</p>`;
   const canvas = document.createElement("canvas"); canvas.className = "measured-waveform"; drawWaveform(canvas, peaks, response.call_structure.estimated_click_onsets_seconds.map(value => value + response.uploaded_recording.trim_start_seconds), response.uploaded_recording.original_duration_seconds); structure.append(canvas);
@@ -195,18 +212,21 @@ function renderScience(response: AnalyzeResponse, peaks: number[]): HTMLElement 
   return details;
 }
 
-function renderArtTeaser(): HTMLElement {
-  const section = document.createElement("section"); section.className = "art-teaser product-section"; section.innerHTML = `<div><span class="kicker">Art View</span><h2>See the acoustic fingerprint become an artwork</h2><p>Every visual parameter comes deterministically from the WhAM fingerprint. It is expressive—not a translation.</p></div>`; const button = document.createElement("button"); button.textContent = "Open Art View →"; button.onclick = showArt; section.append(button); return section;
+function renderArtTeaser(response: AnalyzeResponse): HTMLElement {
+  const wham = response.availability?.wham_embedding;
+  const section = document.createElement("section"); section.className = "art-teaser product-section"; section.innerHTML = `<div><span class="kicker">Art View</span><h2>See the available measurements become an artwork</h2><p>${wham ? "Visual parameters come deterministically from the existing WhAM fingerprint." : "Browser-only art is derived from measured click timing and the audio hash—not a WhAM embedding."} It is expressive, not a translation.</p></div>`; const button = document.createElement("button"); button.textContent = "Open Art View →"; button.onclick = showArt; section.append(button); return section;
 }
 
 function renderSources(): HTMLElement {
   const section = document.createElement("section"); section.id = "sources"; section.className = "sources product-section";
-  section.innerHTML = `<div class="section-heading"><span class="kicker">Sources and scientific limitations</span><h2>What supports this experience</h2></div><p class="limits-callout">Scientists have not translated sperm-whale language. This app analyzes acoustic structure and presents evidence-grounded hypotheses and creative analogies.</p><ul><li><a href="https://github.com/Project-CETI/wham" target="_blank" rel="noreferrer">Project CETI WhAM source</a> · MIT software license</li><li><a href="https://doi.org/10.5281/zenodo.17633708" target="_blank" rel="noreferrer">WhAM model weights</a> · separate CC BY-NC-ND 4.0 terms; this is a noncommercial research and educational demo</li><li><a href="https://huggingface.co/datasets/orrp/DSWP" target="_blank" rel="noreferrer">Dominica Sperm Whale Project public dataset</a> · CC BY 4.0</li><li><a href="https://www.nature.com/articles/s41467-024-47221-8" target="_blank" rel="noreferrer">Sharma et al., Nature Communications (2024)</a></li><li><a href="https://doi.org/10.5281/zenodo.10817697" target="_blank" rel="noreferrer">Zenodo EC1 data release</a> · CC BY 4.0</li></ul><button class="return-top">Return to top ↑</button>`;
+  section.innerHTML = `<div class="section-heading"><span class="kicker">Sources and scientific limitations</span><h2>What supports this experience</h2></div><p class="limits-callout">Scientists have not translated sperm-whale language. This app analyzes acoustic structure and presents evidence-grounded hypotheses and creative analogies.</p><p class="zero-cost-note"><strong>Zero-cost public mode:</strong> the public sample is precomputed, uploads stay in the browser, and the maintainer’s Modal backend is intentionally stopped. Full WhAM analysis requires a researcher-operated backend.</p><ul><li><a href="https://github.com/Project-CETI/wham" target="_blank" rel="noreferrer">Project CETI WhAM source</a> · MIT software license</li><li><a href="https://doi.org/10.5281/zenodo.17633708" target="_blank" rel="noreferrer">WhAM model weights</a> · separate CC BY-NC-ND 4.0 terms; this is a noncommercial research and educational demo</li><li><a href="https://huggingface.co/datasets/orrp/DSWP" target="_blank" rel="noreferrer">Dominica Sperm Whale Project public dataset</a> · CC BY 4.0</li><li><a href="https://www.nature.com/articles/s41467-024-47221-8" target="_blank" rel="noreferrer">Sharma et al., Nature Communications (2024)</a></li><li><a href="https://doi.org/10.5281/zenodo.10817697" target="_blank" rel="noreferrer">Zenodo EC1 data release</a> · CC BY 4.0</li></ul><button class="return-top">Return to top ↑</button>`;
   section.querySelector<HTMLButtonElement>(".return-top")!.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" }); return section;
 }
 
 function renderResults(response: AnalyzeResponse, peaks: number[]): void {
-  passport.replaceChildren(renderCallStory(response), renderNarration(response), renderCodaExplorer(response), renderNeighbors(response), renderScience(response, peaks), renderArtTeaser(), renderSources());
+  const availability = document.createElement("section"); availability.className = `analysis-availability product-section ${response.analysis_mode ?? ""}`;
+  availability.innerHTML = `<span class="kicker">${response.analysis_mode === "precomputed_public_sample" ? "Precomputed public sample" : response.analysis_mode === "researcher_backend" ? "Researcher-operated backend" : "Browser-only local analysis"}</span><h2>${response.analysis_mode === "browser_only" ? "Your recording stayed on this device." : "Analysis availability"}</h2><p>${safe(response.availability?.explanation ?? "")}</p>`;
+  passport.replaceChildren(availability, renderCallStory(response), renderNarration(response), renderCodaExplorer(response), renderNeighbors(response), renderScience(response, peaks), renderArtTeaser(response), renderSources());
 }
 
 function startLoading(): void {
@@ -217,16 +237,20 @@ function startLoading(): void {
 
 function stopLoading(): void { window.clearInterval(loadingTimer); loading.classList.add("hidden"); }
 
-async function processFile(file: File): Promise<void> {
+async function processFile(file: File, preparedResponse?: AnalyzeResponse): Promise<void> {
   lastFile = file;
+  lastPreparedResponse = preparedResponse;
   if (!file.name.toLowerCase().endsWith(".wav") || file.size > 25 * 1024 * 1024) { showError("This audio format isn’t supported. Choose a valid WAV file no larger than 25 MB."); return; }
   startLoading(); stopAllAudio(); if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = URL.createObjectURL(file); audio.src = audioUrl;
   try {
-    const [seed, response, peaks] = await Promise.all([sha256(file), analyzeAudio(file), waveformPeaks(file)]);
-    if (response.embedding_dimension !== 1280) throw new Error("The acoustic fingerprint had an unexpected shape.");
-    const vector = collapseEmbedding(response.embedding, response.embedding_dimension); renderer?.pause(); renderer = new OceanRenderer(get<HTMLCanvasElement>("#art"), deriveParameters(vector, seed)); renderer.pause(); pauseButton.textContent = "▶ Play";
-    renderResults(response, peaks); researchWorkspace?.destroy(); researchWorkspace = new ResearchWorkspace(researchView, response, file, seed, audio); get("#filename").textContent = file.name; get("#meta").textContent = `${response.coda_sequence.probable_coda_count} probable codas · ${response.processing_time_seconds.toFixed(1)} seconds processing`;
-    home.classList.add("hidden"); results.classList.remove("hidden"); resultNav.classList.remove("hidden"); artView.classList.add("hidden"); window.scrollTo({ top: 0 });
+    const responsePromise = preparedResponse ? Promise.resolve(preparedResponse) : researcherBackendUrl ? analyzeWithBackend(file, researcherBackendUrl) : analyzeInBrowser(file);
+    const [seed, response, peaks] = await Promise.all([sha256(file), responsePromise, waveformPeaks(file)]);
+    const hasWham = response.embedding != null && response.embedding_dimension === 1280;
+    const vector = hasWham ? collapseEmbedding(response.embedding, 1280) : localArtVector(response, seed);
+    renderer?.pause(); renderer = new OceanRenderer(get<HTMLCanvasElement>("#art"), deriveParameters(vector, seed)); renderer.pause(); pauseButton.textContent = "▶ Play";
+    get("#art-description").textContent = hasWham ? "This artwork is deterministically mapped from an existing WhAM acoustic fingerprint. It is expressive—not a scientific translation." : "This browser-only artwork is deterministically mapped from measured click timing and the audio hash. It is not a WhAM embedding or scientific translation.";
+    renderResults(response, peaks); researchWorkspace?.destroy(); researchWorkspace = new ResearchWorkspace(researchView, response, file, seed, audio); get("#filename").textContent = file.name; get("#meta").textContent = `${response.coda_sequence.probable_coda_count} probable codas · ${response.analysis_mode === "precomputed_public_sample" ? "precomputed public sample" : response.analysis_mode === "researcher_backend" ? "researcher backend" : `${response.processing_time_seconds.toFixed(1)} seconds · on-device`}`;
+    home.classList.add("hidden"); results.classList.remove("hidden"); passport.classList.remove("hidden"); researchView.classList.add("hidden"); resultNav.classList.remove("hidden"); artView.classList.add("hidden"); resultNav.querySelectorAll("button").forEach(button => button.classList.toggle("active", button.getAttribute("data-target") === "call-story")); window.scrollTo({ top: 0 });
   } catch (cause) { showError(friendlyAnalysisError(cause)); }
   finally { stopLoading(); }
 }
@@ -235,7 +259,7 @@ function showError(message: string): void { stopLoading(); captureOptions.classL
 
 async function analyzeSample(): Promise<void> {
   startLoading();
-  try { const response = await fetch(SAMPLE_RECORDING.url); if (!response.ok) throw new Error("Sample unavailable"); const blob = await response.blob(); await processFile(new File([blob], SAMPLE_RECORDING.filename, { type: "audio/wav" })); }
+  try { const response = await fetch(SAMPLE_RECORDING.url); if (!response.ok) throw new Error("Sample unavailable"); const blob = await response.blob(); await processFile(new File([blob], SAMPLE_RECORDING.filename, { type: "audio/wav" }), publicSampleAnalysis as unknown as AnalyzeResponse); }
   catch (cause) { showError(cause instanceof Error && cause.message === "Sample unavailable" ? "The public sample could not be loaded. Try uploading a WAV file instead." : friendlyAnalysisError(cause)); }
 }
 
@@ -246,7 +270,7 @@ function showArt(): void { corpusView.classList.add("hidden"); corpusNavButton.c
 function showCorpus(): void { stopAllAudio(); renderer?.pause(); researchWorkspace?.stop(); home.classList.add("hidden"); results.classList.add("hidden"); artView.classList.add("hidden"); corpusView.classList.remove("hidden"); corpusNavButton.classList.add("active"); resultNav.querySelectorAll("button").forEach(button => button.classList.remove("active")); corpusWorkspace.show(); window.scrollTo({ top: 0, behavior: "smooth" }); }
 
 async function resetExperience(): Promise<void> {
-  stopAllAudio(); renderer?.pause(); researchWorkspace?.destroy(); researchWorkspace = undefined; window.clearInterval(loadingTimer); window.clearTimeout(liveLimitTimer); cancelAnimationFrame(liveFrame); if (microphone) await microphone.cancel(); microphone = undefined; if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = undefined; audio.removeAttribute("src"); audio.load(); input.value = ""; lastFile = undefined; passport.replaceChildren(); researchView.replaceChildren(); results.classList.add("hidden"); artView.classList.add("hidden"); corpusView.classList.add("hidden"); corpusNavButton.classList.remove("active"); resultNav.classList.add("hidden"); loading.classList.add("hidden"); livePanel.classList.add("hidden"); errorPanel.classList.add("hidden"); captureOptions.classList.remove("hidden"); home.classList.remove("hidden"); recordingTime.textContent = "00:00.0 / 00:20.0"; window.scrollTo({ top: 0, behavior: "smooth" });
+  stopAllAudio(); renderer?.pause(); researchWorkspace?.destroy(); researchWorkspace = undefined; window.clearInterval(loadingTimer); window.clearTimeout(liveLimitTimer); cancelAnimationFrame(liveFrame); if (microphone) await microphone.cancel(); microphone = undefined; if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = undefined; audio.removeAttribute("src"); audio.load(); input.value = ""; lastFile = undefined; lastPreparedResponse = undefined; passport.replaceChildren(); researchView.replaceChildren(); passport.classList.remove("hidden"); researchView.classList.add("hidden"); results.classList.add("hidden"); artView.classList.add("hidden"); corpusView.classList.add("hidden"); corpusNavButton.classList.remove("active"); resultNav.classList.add("hidden"); loading.classList.add("hidden"); livePanel.classList.add("hidden"); errorPanel.classList.add("hidden"); captureOptions.classList.remove("hidden"); home.classList.remove("hidden"); recordingTime.textContent = "00:00.0 / 00:20.0"; window.scrollTo({ top: 0, behavior: "smooth" });
 }
 
 function drawLiveInput(): void { if (!microphone || microphone.state !== "recording") return; const values = microphone.levels(), context = liveCanvas.getContext("2d")!; liveCanvas.width = 700; liveCanvas.height = 150; context.clearRect(0, 0, 700, 150); context.strokeStyle = "#66d9c7"; context.lineWidth = 2; context.beginPath(); values.forEach((value, index) => { const x = index / Math.max(1, values.length - 1) * 700, y = value / 255 * 150; index ? context.lineTo(x, y) : context.moveTo(x, y); }); context.stroke(); const elapsed = Math.min(20, microphone.elapsedSeconds()); recordingTime.textContent = `00:${elapsed.toFixed(1).padStart(4, "0")} / 00:20.0`; liveFrame = requestAnimationFrame(drawLiveInput); }
@@ -256,9 +280,25 @@ async function cancelLive(): Promise<void> { if (microphone) await microphone.ca
 
 get<HTMLButtonElement>("#sample-option").onclick = () => void analyzeSample(); get<HTMLButtonElement>("#upload-option").onclick = () => input.click(); get<HTMLButtonElement>("#live-option").onclick = () => void startLive();
 get<HTMLButtonElement>("#stop-recording").onclick = () => void finishLive(); get<HTMLButtonElement>("#cancel-recording").onclick = () => void cancelLive(); input.onchange = () => { if (input.files?.[0]) void processFile(input.files[0]); };
-get<HTMLButtonElement>("#retry-analysis").onclick = () => { if (lastFile) void processFile(lastFile); else void resetExperience(); }; get<HTMLButtonElement>("#analyze-another").onclick = () => void resetExperience(); document.querySelectorAll<HTMLButtonElement>(".reset-home").forEach(button => button.onclick = () => void resetExperience());
+get<HTMLButtonElement>("#retry-analysis").onclick = () => { if (lastFile) void processFile(lastFile, lastPreparedResponse); else void resetExperience(); }; get<HTMLButtonElement>("#analyze-another").onclick = () => void resetExperience(); document.querySelectorAll<HTMLButtonElement>(".reset-home").forEach(button => button.onclick = () => void resetExperience());
 get<HTMLButtonElement>("#replay").onclick = () => { renderer?.replay(); pauseButton.textContent = "Ⅱ Pause"; }; pauseButton.onclick = () => { if (!renderer) return; renderer.isRunning() ? renderer.pause() : renderer.resume(); pauseButton.textContent = renderer.isRunning() ? "Ⅱ Pause" : "▶ Play"; }; get<HTMLButtonElement>("#download").onclick = () => renderer?.download(); get<HTMLButtonElement>(".return-story").onclick = showStory;
 resultNav.querySelectorAll<HTMLButtonElement>("button").forEach(button => button.onclick = () => button.dataset.target === "art-view" ? showArt() : button.dataset.target === "research" ? showResearch() : button.dataset.target === "science" ? showScience() : showStory());
 corpusNavButton.onclick = showCorpus;
+const backendInput = get<HTMLInputElement>("#backend-url"), backendStatus = get<HTMLElement>("#backend-status"), analysisModeLabel = get<HTMLElement>("#analysis-mode-label");
+function renderBackendSetting(): void {
+  backendInput.value = researcherBackendUrl;
+  analysisModeLabel.textContent = researcherBackendUrl ? "Bring Your Own Backend mode" : "Zero-cost browser-only mode";
+  backendStatus.textContent = researcherBackendUrl ? `Future uploads will be sent only to ${researcherBackendUrl}.` : "No backend is connected. Audio remains on this device.";
+}
+get<HTMLButtonElement>("#save-backend").onclick = () => {
+  try {
+    const parsed = new URL(backendInput.value.trim());
+    const localDevelopment = (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1") && (parsed.protocol === "http:" || parsed.protocol === "https:");
+    if ((parsed.protocol !== "https:" && !localDevelopment) || parsed.username || parsed.password || parsed.search || parsed.hash) throw new Error();
+    researcherBackendUrl = parsed.href.replace(/\/$/, ""); localStorage.setItem(BACKEND_STORAGE_KEY, researcherBackendUrl); renderBackendSetting();
+  } catch { backendStatus.textContent = "Enter a valid HTTPS URL, or a localhost URL for development."; }
+};
+get<HTMLButtonElement>("#disconnect-backend").onclick = () => { researcherBackendUrl = ""; localStorage.removeItem(BACKEND_STORAGE_KEY); renderBackendSetting(); };
+renderBackendSetting();
 captureOptions.addEventListener("dragover", event => { event.preventDefault(); captureOptions.classList.add("dragging"); }); captureOptions.addEventListener("dragleave", () => captureOptions.classList.remove("dragging")); captureOptions.addEventListener("drop", event => { event.preventDefault(); captureOptions.classList.remove("dragging"); const file = event.dataTransfer?.files[0]; if (file) void processFile(file); });
 window.addEventListener("beforeunload", () => { homeOcean.dispose(); stopAllAudio(); renderer?.pause(); researchWorkspace?.stop(); if (microphone) void microphone.cancel(); });

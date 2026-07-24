@@ -1,0 +1,47 @@
+{
+  "ambiguous_gap_lower_seconds": 0.4858827799999999,
+  "boundary_rule": "Split when consecutive estimated click onsets are separated by at least the balanced-accuracy threshold. Boundaries inside the empirical overlap band are ambiguous; gaps above the largest observed included EC1 within-coda ICI are clear.",
+  "clear_boundary_seconds": 0.55172,
+  "derivation": {
+    "balanced_accuracy": 0.961902857901582,
+    "between_coda": {
+      "count": 2910,
+      "overlapping_pairs_excluded": 908,
+      "quantiles_seconds": {
+        "0.01": 0.06887805999995067,
+        "0.05": 0.3282203250000351,
+        "0.25": 2.2183803500005297,
+        "0.5": 3.0854458000003433,
+        "0.75": 4.175385975003337,
+        "0.95": 23.587738719999216,
+        "0.99": 2500.077054349999
+      },
+      "source": "Non-negative next onset minus current onset plus Duration, grouped by REC[:6] in sperm-whale-dialogues.csv"
+    },
+    "between_coda_sensitivity_at_clear_boundary": 0.9230240549828179,
+    "between_coda_sensitivity_at_threshold": 0.9261168384879725,
+    "within_coda": {
+      "count": 30721,
+      "maximum_seconds": 0.55172,
+      "quantiles_seconds": {
+        "0.01": 0.03,
+        "0.05": 0.044,
+        "0.25": 0.0838,
+        "0.5": 0.1563558,
+        "0.75": 0.2487667,
+        "0.95": 0.4426,
+        "0.99": 0.4858827799999999
+      },
+      "source": "EC1 non-noise rows in DominicaCodas.csv"
+    },
+    "within_coda_specificity_at_threshold": 0.9976888773151915
+  },
+  "schema_version": 1,
+  "scope": {
+    "groups_over_maximum_are_rejected_instead_of_forced": true,
+    "isolated_groups_under_minimum_are_rejected": true,
+    "maximum_coda_clicks": 10,
+    "minimum_coda_clicks": 3
+  },
+  "split_threshold_seconds": 0.517216
+}

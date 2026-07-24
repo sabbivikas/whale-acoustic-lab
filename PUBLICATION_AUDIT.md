@@ -1,14 +1,16 @@
 # Final publication audit
 
-Audit updated: 2026-07-23. This repository remains private.
+Audit updated: 2026-07-24. The code repository is public.
 
 ## Verdict
 
-**Safe to make the code repository public after the repository owner performs
-the visibility-switch checklist below. The hosted production service has
-separate unresolved launch requirements.**
+**The code repository is public and passed its publication gates. The
+zero-cost static frontend is eligible for deployment after local/CI validation
+and free-tier confirmation. A full hosted inference service has separate
+unresolved launch requirements.**
 
-The EC1 license/provenance blocker remains resolved. Ownership, contribution,
+The EC1 license/provenance blocker remains resolved. The repository is
+https://github.com/sabbivikas/whale-acoustic-lab. Ownership, contribution,
 governance, private reporting instructions, dependency/SBOM records, privacy
 and retention policy, reviewed screenshots, and local release checks are now
 present. Model weights, raw EC1 build inputs, private audio, exports, secrets,
@@ -33,6 +35,9 @@ Approved derived files:
 - `references/coda_code/rhythm_reference_index.json`
 - `references/coda_code/dialogue_context_index.json`
 - `references/coda_code/segmentation_thresholds.json`
+- byte-identical frontend runtime copies:
+  `frontend/src/data/rhythm-reference-index.v1.json` and
+  `frontend/src/data/segmentation-thresholds.v1.json`
 
 Required accompanying documents:
 
@@ -59,7 +64,7 @@ From that clean tree:
 - all three JSON indexes loaded successfully;
 - `coda_code` interpretation executed locally;
 - `coda_segmentation` executed locally;
-- all 60 frontend tests passed;
+- all 66 frontend tests passed;
 - TypeScript type-checking passed; and
 - the production frontend build passed.
 
@@ -74,11 +79,13 @@ From that clean tree:
 - Required EC1 publication inventory: passed.
 - Raw EC1 source files in publishable inventory: zero.
 - `OPENAI_API_KEY` frontend source/bundle references: zero from the preceding release audit and unchanged by this documentation/test-only pass.
-- `frontend/.env.local`: ignored; contains only the public `VITE_WHAM_API_URL` endpoint without embedded URL credentials.
+- Frontend runtime configuration has no compiled default backend URL.
 - Research drafts remain in `localStorage`; corpus persistence is explicit IndexedDB; local annotation, evaluation, and export actions do not transmit those data.
 - Credential rotation required: no evidence requiring rotation was found.
 - `store:false` and the compact GPT evidence boundary are now release-tested.
-- Raw audio reaches Modal only after an explicit analysis action.
+- The precomputed sample and browser-only analysis make no analysis API request.
+- Raw audio can leave the browser only after a researcher explicitly connects
+  a compatible backend and then starts a later analysis.
 - OpenAI receives no raw audio, full embedding, filename, or researcher note.
 - Research Mode, Annotation Evaluation, Corpus Explorer, PCA, annotation edits, and exports remain browser-only.
 - Provider defaults are documented separately from production dashboard settings; those dashboard settings are not yet verified.
@@ -107,7 +114,7 @@ From that clean tree:
 
 ## Final local validation
 
-- Frontend tests: **60/60 passed**.
+- Frontend tests: **66/66 passed**.
 - Pure local backend tests: **70/70 passed**, including three EC1 publication/runtime tests plus WaveBeat, weight-route, cache-lifecycle, font-hosting, and privacy-boundary tests.
 - TypeScript type-check: passed.
 - Production frontend build: passed.
@@ -136,23 +143,16 @@ The lazy Three.js homepage chunk remains approximately 540 kB minified / 137 kB 
 
 The sole approved bundled audio is `frontend/public/samples/dswp-1.wav`, with DSWP attribution and checksum metadata.
 
-## Code-repository visibility checklist
+## Code-repository and hosted-service boundary
 
-GitHub does not permit Private Vulnerability Reporting to be enabled while a
-repository is private. When Vikas Sabbi intentionally changes visibility:
+The code repository is public and its GitHub-native security protections are
+tracked separately from hosting. Private Vulnerability Reporting is the
+documented sensitive-reporting path.
 
-1. confirm the release commit and successful GitHub Actions run;
-2. change only the code repository visibility;
-3. immediately enable GitHub Private Vulnerability Reporting under
-   `Settings → Code security and analysis`;
-4. verify the `Report a vulnerability` action appears under Security
-   Advisories; and
-5. keep Modal and Vercel undeployed or unchanged unless their separate launch
-   gates have been satisfied.
-
-There is no remaining code-level licensing, provenance, screenshot, secret, or
-tracked-file blocker identified by this audit. The repository must remain
-private until the owner deliberately performs the checklist.
+The maintainer’s Modal application must remain stopped. The static Vercel
+frontend may be deployed without a backend URL, functions, analytics,
+databases, or paid features after the zero-cost release gates pass. A
+researcher-operated inference service retains the separate blockers below.
 
 ## GitHub Actions compatibility
 

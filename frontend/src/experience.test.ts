@@ -30,7 +30,7 @@ test("all three homepage actions remain immediately available", () => {
 test("loading experience has the six ordered non-percentage states", () => {
   assert.deepEqual([...LOADING_STEPS], [
     "Preparing the recording", "Listening for clicks", "Separating probable codas",
-    "Comparing published patterns", "Building the acoustic fingerprint", "Creating the interpretation",
+    "Measuring the rhythm", "Checking available comparisons", "Creating a deterministic explanation",
   ]);
   assert.ok(LOADING_STEPS.every(step => !step.includes("%")));
 });
@@ -43,7 +43,7 @@ test("call story handles multi-coda and no-coda results", () => {
 
 test("errors are actionable and never expose raw transport text", () => {
   const network = friendlyAnalysisError(new Error("Failed to fetch"));
-  assert.match(network, /connection/);
+  assert.match(network, /backend/);
   assert.doesNotMatch(network, /Failed to fetch/);
   assert.match(friendlyAnalysisError(new Error("unsupported WAV")), /valid WAV/);
 });

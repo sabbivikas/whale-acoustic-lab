@@ -48,8 +48,15 @@ export interface MeasuredRhythm {
 }
 
 export interface AnalyzeResponse {
-  embedding: unknown;
-  embedding_dimension: number;
+  analysis_mode?: "precomputed_public_sample" | "browser_only" | "researcher_backend";
+  availability?: {
+    wham_embedding: boolean;
+    acoustic_neighbors: boolean;
+    gpt_narration: boolean;
+    explanation: string;
+  };
+  embedding?: unknown | null;
+  embedding_dimension?: number | null;
   processing_time_seconds: number;
   gpu_name: string;
   uploaded_recording: {
@@ -64,7 +71,7 @@ export interface AnalyzeResponse {
     channels: number;
     bit_depth: number;
   };
-  matches: ReferenceMatch[];
+  matches?: ReferenceMatch[];
   reference_percentile_definition: string;
   similarity_statement: string;
   ai_evidence_narration: {
@@ -175,10 +182,15 @@ export interface AnalyzeResponse {
   };
 }
 
-export async function analyzeAudio(file: File): Promise<AnalyzeResponse> {
-  const baseUrl = import.meta.env.VITE_WHAM_API_URL?.replace(/\/$/, "");
-  if (!baseUrl) throw new Error("VITE_WHAM_API_URL is not configured.");
-
+export async function analyzeWithBackend(file: File, backendUrl: string): Promise<AnalyzeResponse> {
+  const baseUrl = backendUrl.trim().replace(/\/$/, "");
+  let parsed: URL;
+  try { parsed = new URL(baseUrl); } catch { throw new Error("Enter a valid HTTPS backend URL."); }
+  const localDevelopment = (parsed.hostname === "localhost" || parsed.hostname === "127.0.0.1")
+    && (parsed.protocol === "http:" || parsed.protocol === "https:");
+  if ((parsed.protocol !== "https:" && !localDevelopment) || parsed.username || parsed.password || parsed.search || parsed.hash) {
+    throw new Error("Research backends must use HTTPS, except local development URLs.");
+  }
   const body = new FormData();
   body.append("file", file, file.name);
   let response: Response;
@@ -192,7 +204,16 @@ export async function analyzeAudio(file: File): Promise<AnalyzeResponse> {
     const detail = payload && "detail" in payload ? payload.detail : undefined;
     throw new Error(detail || `Analysis service returned ${response.status}.`);
   }
-  return payload as AnalyzeResponse;
+  return {
+    ...(payload as AnalyzeResponse),
+    analysis_mode: "researcher_backend",
+    availability: {
+      wham_embedding: Boolean((payload as AnalyzeResponse).embedding),
+      acoustic_neighbors: Boolean((payload as AnalyzeResponse).matches?.length),
+      gpt_narration: (payload as AnalyzeResponse).ai_evidence_narration?.status !== "deterministic_fallback",
+      explanation: "Results were returned by the researcher-operated backend explicitly configured in this browser.",
+    },
+  };
 }
 
 export async function sha256(file: File): Promise<string> {

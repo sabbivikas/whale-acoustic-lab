@@ -120,7 +120,7 @@ export function createResearchPackage(input: ResearchExportInput): Record<string
       values: response.embedding,
       dimension: response.embedding_dimension,
     } : null,
-    existing_acoustic_neighbors: response.matches,
+    existing_acoustic_neighbors: response.matches ?? [],
     detector_and_segmentation: {
       click_detector: {
         estimate_status: response.call_structure.estimate_status,
@@ -134,7 +134,7 @@ export function createResearchPackage(input: ResearchExportInput): Record<string
       },
     },
     available_model_and_algorithm_identifiers: {
-      embedding_dimension: response.embedding_dimension,
+      embedding_dimension: response.embedding_dimension ?? null,
       processing_hardware_name: response.gpu_name,
       narration_model: response.ai_evidence_narration.model,
       narration_prompt_version: response.ai_evidence_narration.prompt_version,

@@ -9,12 +9,13 @@ from __future__ import annotations
 
 import argparse
 import hashlib
+import json
 import re
 import struct
 import subprocess
 import sys
 from pathlib import Path
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote
 
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -38,6 +39,7 @@ REQUIRED_POLICY_FILES = {
     "DEPENDENCY_POLICY.md",
     "PRIVACY.md",
     "DATA_RETENTION.md",
+    "PRODUCTION.md",
     "WHAM_WEIGHTS.md",
     "backend/WAVEBEAT_AUDIT.md",
     "COPYRIGHT.md",
@@ -82,6 +84,10 @@ SECRET_PATTERNS: tuple[tuple[str, re.Pattern[str]], ...] = (
 
 BUNDLE_FORBIDDEN_NAMES = re.compile(
     r"OPENAI_API_KEY|MODAL_TOKEN_(?:ID|SECRET)|VERCEL_TOKEN|GITHUB_TOKEN|HF_TOKEN|BEGIN PRIVATE KEY"
+)
+PRODUCTION_BACKEND_MARKERS = re.compile(
+    r"VITE_WHAM_API_URL|(?:sabbi[-_]?vikas)[^\"'\s]*\.modal\.run|https?://[^\"'\s]*\.modal\.run",
+    re.IGNORECASE,
 )
 
 
@@ -157,6 +163,8 @@ def scan_bundle() -> list[tuple[str, str]]:
         scan_text(label, text, findings)
         if BUNDLE_FORBIDDEN_NAMES.search(text):
             findings.append(("backend-only credential name in frontend bundle", label))
+        if PRODUCTION_BACKEND_MARKERS.search(text):
+            findings.append(("maintainer backend marker in frontend bundle", label))
     return findings
 
 
@@ -216,13 +224,59 @@ def validate_public_endpoint() -> list[tuple[str, str]]:
         if not path.exists():
             findings.append(("missing environment example", name))
             continue
-        for line in path.read_text(encoding="utf-8").splitlines():
-            if not line.startswith("VITE_WHAM_API_URL="):
-                continue
-            value = line.split("=", 1)[1].strip()
-            parsed = urlsplit(value)
-            if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password or parsed.query or parsed.fragment:
-                findings.append(("unsafe VITE_WHAM_API_URL example", name))
+        if "VITE_WHAM_API_URL" in path.read_text(encoding="utf-8"):
+            findings.append(("obsolete production backend environment variable", name))
+    return findings
+
+
+def validate_zero_cost_frontend() -> list[tuple[str, str]]:
+    findings: list[tuple[str, str]] = []
+    source_root = ROOT / "frontend" / "src"
+    for path in source_root.rglob("*"):
+        if not path.is_file() or path.suffix.lower() in BINARY_SUFFIXES:
+            continue
+        text = text_from_bytes(path.read_bytes())
+        if text is not None and PRODUCTION_BACKEND_MARKERS.search(text):
+            findings.append(("maintainer backend marker in frontend source", relative(path)))
+
+    browser_analysis = source_root / "browser-analysis.ts"
+    if not browser_analysis.is_file():
+        findings.append(("browser-only analyzer missing", relative(browser_analysis)))
+    else:
+        text = browser_analysis.read_text(encoding="utf-8")
+        if re.search(r"\b(?:fetch|XMLHttpRequest|sendBeacon|WebSocket)\s*\(", text):
+            findings.append(("network primitive in browser-only analyzer", relative(browser_analysis)))
+
+    sample_result = source_root / "data" / "dswp-1-analysis.v1.json"
+    sample_audio = ROOT / "frontend" / "public" / "samples" / "dswp-1.wav"
+    if not sample_audio.is_file():
+        findings.append(("bundled public sample audio missing", relative(sample_audio)))
+    if not sample_result.is_file():
+        findings.append(("precomputed public sample analysis missing", relative(sample_result)))
+    else:
+        try:
+            payload = json.loads(sample_result.read_text(encoding="utf-8"))
+            source = payload.get("precomputed_source", {})
+            if payload.get("schema_version") != "whale-public-sample-analysis-v1":
+                findings.append(("unexpected public-sample schema version", relative(sample_result)))
+            if payload.get("analysis_mode") != "precomputed_public_sample":
+                findings.append(("public sample is not labeled precomputed", relative(sample_result)))
+            if source.get("network_or_inference_used") is not False:
+                findings.append(("public sample does not attest local precomputation", relative(sample_result)))
+            if sample_audio.is_file() and source.get("audio_sha256") != hashlib.sha256(sample_audio.read_bytes()).hexdigest():
+                findings.append(("public sample analysis/audio SHA mismatch", relative(sample_result)))
+        except (OSError, ValueError, TypeError):
+            findings.append(("precomputed public sample analysis is invalid JSON", relative(sample_result)))
+
+    copied_indexes = {
+        source_root / "data" / "rhythm-reference-index.v1.json": ROOT / "references" / "coda_code" / "rhythm_reference_index.json",
+        source_root / "data" / "segmentation-thresholds.v1.json": ROOT / "references" / "coda_code" / "segmentation_thresholds.json",
+    }
+    for copied, authoritative in copied_indexes.items():
+        if not copied.is_file() or not authoritative.is_file():
+            findings.append(("browser reference data missing", relative(copied)))
+        elif hashlib.sha256(copied.read_bytes()).digest() != hashlib.sha256(authoritative.read_bytes()).digest():
+            findings.append(("browser reference copy differs from attributed source", relative(copied)))
     return findings
 
 
@@ -479,6 +533,7 @@ def main() -> int:
     ok &= report("working tree contains no credential patterns", scan_worktree())
     ok &= report("tracked-file publication policy", validate_tracked_files())
     ok &= report("public endpoint examples", validate_public_endpoint())
+    ok &= report("zero-cost frontend boundary", validate_zero_cost_frontend())
     ok &= report("worktree contains no model checkpoints", validate_checkpoint_worktree())
     ok &= report("EC1 publishable-file inventory", validate_publishable_ec1_inventory())
     ok &= report("license and provenance inventory", validate_license_inventory())

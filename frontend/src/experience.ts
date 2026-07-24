@@ -1,18 +1,18 @@
 import type { AnalyzeResponse } from "./api";
 
 export const HOME_ACTIONS = [
-  { id: "sample-option", className: "sample-card", icon: "▶", title: "Try a real whale call", description: "Analyze a public DSWP recording" },
-  { id: "upload-option", className: "", icon: "↑", title: "Upload audio", description: "Choose or drop a WAV · max 25 MB" },
-  { id: "live-option", className: "", icon: "●", title: "Listen Live", description: "Use your microphone · up to 20 seconds" },
+  { id: "sample-option", className: "sample-card", icon: "▶", title: "Try a real whale call", description: "Open a precomputed public DSWP sample" },
+  { id: "upload-option", className: "", icon: "↑", title: "Upload audio", description: "Analyze locally · WAV · max 25 MB" },
+  { id: "live-option", className: "", icon: "●", title: "Listen Live", description: "Record and analyze locally · up to 20 seconds" },
 ] as const;
 
 export const LOADING_STEPS = [
   "Preparing the recording",
   "Listening for clicks",
   "Separating probable codas",
-  "Comparing published patterns",
-  "Building the acoustic fingerprint",
-  "Creating the interpretation",
+  "Measuring the rhythm",
+  "Checking available comparisons",
+  "Creating a deterministic explanation",
 ] as const;
 
 export const SAMPLE_RECORDING = {
@@ -57,7 +57,7 @@ export function friendlyAnalysisError(cause: unknown): string {
   const text = cause instanceof Error ? cause.message : String(cause ?? "");
   const lower = text.toLowerCase();
   if (lower.includes("failed to fetch") || lower.includes("network") || lower.includes("load failed"))
-    return "We couldn’t reach the analysis service. Check your connection, then try the recording again. The first analysis can also take longer while the model starts.";
+    return "We couldn’t reach the researcher-operated backend. Disconnect it to use zero-cost browser-only analysis, or verify its URL and access controls.";
   if (lower.includes("silent") || lower.includes("no active audio"))
     return "We couldn’t find enough audible signal in this recording. Try a clearer whale recording with less surrounding silence.";
   if (lower.includes("shorter than") || lower.includes("too short"))

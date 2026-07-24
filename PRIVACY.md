@@ -1,12 +1,14 @@
 # Privacy and data flow
 
-Last reviewed: 2026-07-23. This document describes verified project behavior and current provider documentation. It is not legal advice. Production dashboard settings must be checked before accepting sensitive or embargoed recordings.
+Last reviewed: 2026-07-24. This document describes verified project behavior and current provider documentation. It is not legal advice. A researcher-operated backend’s dashboard settings must be checked before accepting sensitive or embargoed recordings.
 
 ## What the code does
 
 | Data | Destination | Trigger | Verified use |
 |---|---|---|---|
-| Uploaded/sample/microphone WAV | Modal analysis endpoint | Only after the user selects a sample, chooses a file, or finishes a live recording and starts analysis | Decode/trim, click and coda analysis, WhAM embedding, acoustic-neighbor comparison. Temporary files are removed in `finally`. |
+| Bundled public sample | Static site/browser memory | After the user chooses the sample | Loads the attributed WAV and versioned precomputed JSON. No analysis API request. |
+| Uploaded/microphone WAV, default mode | Browser memory | After the user chooses a file or finishes recording | Web Audio decode, waveform/spectrogram, click/coda/rhythm estimates, deterministic explanation. No upload or inference request. |
+| Uploaded/microphone WAV, Bring Your Own Backend | Researcher-configured compatible endpoint | Only after a backend URL has been explicitly stored and an analysis is started | Backend-defined analysis. The researcher controls hosting, access, licensing, logging, and retention. |
 | Compact calculated evidence | OpenAI Responses API | Backend narration step during analysis when a backend key exists and no valid cache hit is available | Schema-bound narration. The whitelist excludes raw audio, full embeddings, filenames, identities, and researcher annotations. |
 | Automatic and corrected annotations | Browser localStorage | Research Mode edits | Draft restoration keyed by audio SHA-256. No annotation-edit network request exists. |
 | Imported research packages/corpus | Browser memory | Researcher selects files | Validation, aggregation, cosine similarity, PCA, filtering, outlier scoring, and export. |
@@ -23,9 +25,30 @@ Provider policy: OpenAI states that API data is not used to train models unless 
 
 Manual verification: confirm the production OpenAI organization/project Data Controls setting (Default, Modified Abuse Monitoring, or Zero Data Retention), any opt-in sharing, and whether prompt caching is enabled.
 
-## Modal boundary
+## Public static-site boundary
 
-The WAV request is sent to the Modal-hosted FastAPI endpoint. The application reads it into request memory and writes only a trimmed temporary WAV for inference; that file is deleted. WhAM weights remain in a private persistent volume. Generated narration JSON may be cached for 30 days in a separate persistent Modal volume using a hash-derived key. The minimal cache envelope contains schema version, creation/expiration timestamps, and validated narration only; it excludes raw audio, embeddings, filenames, research notes, the source audio hash, and personal information. Expired entries cannot be returned as cache hits.
+The maintainer’s Modal application is intentionally stopped. The production
+frontend contains no maintainer Modal URL and requires no
+`VITE_WHAM_API_URL`. The public sample uses same-origin static files. Default
+uploads and microphone recordings are decoded and measured in the browser;
+Research Mode, Annotation Evaluation, exports, Corpus Explorer, PCA, and Art
+View remain browser-only. The static site makes no OpenAI or GPT request.
+
+The optional compatible backend URL is stored in browser `localStorage` only
+after an explicit researcher action. The UI does not request or store a
+backend API key. Audio is sent only for later analyses while that connection
+remains enabled; disconnecting restores local-only behavior.
+
+## Optional researcher-operated Modal boundary
+
+If a researcher separately operates the included backend and connects its URL,
+the WAV request is sent to that endpoint. The backend reads it into request
+memory and writes only a trimmed temporary WAV for inference; that file is
+deleted. WhAM weights remain in the operator’s private persistent volume.
+Generated narration JSON may be cached for 30 days in a separate volume using
+a hash-derived key. The minimal cache envelope excludes raw audio, embeddings,
+filenames, research notes, the source audio hash, and personal information.
+Expired entries cannot be returned as cache hits.
 
 Modal documents encryption in transit/at rest, container reuse, persistent Volumes, Secret injection as environment variables, and plan-dependent log retention. Its security guide distinguishes request/response handling by endpoint type. Confirm in the production dashboard how this `@modal.asgi_app` endpoint is classified and which logs/retention apply. See [Modal security and privacy](https://modal.com/docs/guide/security), [Secrets](https://modal.com/docs/guide/secrets), [Volumes](https://modal.com/docs/guide/volumes), and [container lifecycle](https://modal.com/docs/guide/lifecycle-functions).
 

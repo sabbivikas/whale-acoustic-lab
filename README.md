@@ -1,6 +1,6 @@
 # Whale Acoustic Lab
 
-Whale Acoustic Lab is an evidence-bounded product and researcher workspace for exploring sperm-whale recordings. It combines transparent waveform measurements, probable-coda segmentation, Project CETI WhAM acoustic embeddings, cautious comparisons with published timing data, local annotation tools, and deterministic visual art.
+Whale Acoustic Lab is an evidence-bounded product and researcher workspace for exploring sperm-whale recordings. Its public site is a static, zero-cost experience: an attributed sample has a checked-in precomputed result, while uploads and microphone recordings use transparent browser-only timing analysis. Researchers may explicitly connect their own compatible backend for full WhAM features.
 
 > Scientists have not literally translated sperm-whale language. This project analyzes acoustic structure. Its family matches, conversational-role hypotheses, model-space neighbors, and musical analogies are limited comparisons—not statements of meaning, identity, intent, emotion, clan, or dialect.
 
@@ -15,9 +15,26 @@ See [COPYRIGHT.md](COPYRIGHT.md), [CONTRIBUTORS.md](CONTRIBUTORS.md), and
 
 The public experience provides three immediate paths:
 
-- **Try a real whale call** using an attributed DSWP sample.
-- **Upload audio** for analysis.
-- **Listen Live** by explicitly choosing microphone recording; permission is not requested before that action.
+- **Try a real whale call** using an attributed DSWP sample and its versioned precomputed analysis.
+- **Upload audio** for local browser-only analysis.
+- **Listen Live** for local browser-only analysis; microphone permission is requested only after that action.
+
+The three operating modes are:
+
+1. **Public Demo:** loads the bundled DSWP WAV and
+   `frontend/src/data/dswp-1-analysis.v1.json`. That result was produced from
+   checked-in audio, an existing stored embedding, existing indexes, local
+   click/coda/rhythm code, and deterministic narration. It is labeled
+   “Precomputed public sample.”
+2. **Browser-Only Local Analysis:** decodes user audio with Web Audio and
+   calculates click estimates, ICIs, probable-coda segmentation, EC1 timing
+   comparisons, rhythm measurements, waveform, spectrogram, and deterministic
+   explanations on the device. It makes no analysis API request and does not
+   create a WhAM embedding, acoustic neighbors, or GPT narration.
+3. **Bring Your Own Backend:** an optional Advanced setting accepts a
+   compatible HTTPS backend URL and stores it only in that browser. Whale
+   Acoustic Lab never requests or stores its API key. The researcher is
+   responsible for cost, access control, licenses, and data handling.
 
 After analysis, the interface presents:
 
@@ -25,8 +42,8 @@ After analysis, the interface presents:
 - click timestamps, inter-click intervals (ICIs), rhythm regularity, pace direction, and grouping;
 - nearest published EC1 rhythm families with abstention when the accepted range is exceeded;
 - conversational-role evidence separately from factual rhythm measurements;
-- nearest DSWP recordings in WhAM model space;
-- optional GPT-5.6 evidence narration constrained to calculated evidence, with a deterministic fallback;
+- nearest DSWP recordings in WhAM model space when an existing embedding is available;
+- optional backend GPT evidence narration when returned, with deterministic local narration otherwise;
 - a Science view containing measurements, matching definitions, provenance, and limitations; and
 - an Art View whose parameters are deterministically derived from the existing embedding.
 
@@ -83,10 +100,33 @@ for dimensions, capture method, data boundaries, and attribution.
 - `.github/workflows/ci.yml` — secret-free CPU-only validation.
 
 Detailed diagrams and trust boundaries are in [ARCHITECTURE.md](ARCHITECTURE.md).
+Static hosting and mode-specific release gates are in
+[PRODUCTION.md](PRODUCTION.md).
 
-## Analysis pipeline
+## Analysis pipelines
 
-The production backend:
+### Zero-cost public pipeline
+
+The default hosted path performs no remote inference:
+
+1. The public sample loads an attributed WAV and its versioned static result.
+2. User uploads and microphone recordings remain in the browser.
+3. Web Audio decoding feeds the documented waveform click detector.
+4. Existing thresholds segment probable codas.
+5. Existing equal-click-count EC1 timing references support MSE comparison and
+   abstention; measurements remain estimates.
+6. The browser creates an evidence-bounded deterministic explanation.
+7. Research Mode, evaluation, exports, Corpus Explorer, and Art View continue
+   locally. Without WhAM, Art View uses deterministic timing/audio-hash values
+   that are explicitly not represented as an embedding.
+
+The maintainer’s Modal application is intentionally stopped. The public Vercel
+bundle contains no maintainer Modal URL, calls no OpenAI service, and incurs no
+per-analysis Modal, GPU, WhAM, or model-provider cost.
+
+### Researcher-operated backend pipeline
+
+The optional compatible backend:
 
 1. validates and decodes a user-submitted WAV;
 2. normalizes it to mono 16-bit PCM where required;
@@ -106,13 +146,16 @@ Whale Acoustic Lab is presented as a **noncommercial research and educational de
 Requirements: a current Node.js LTS release and npm.
 
 ```bash
-cp .env.example frontend/.env.local
 cd frontend
 npm ci
 npm run dev
 ```
 
-Set `VITE_WHAM_API_URL` to a public backend origin. It is compiled into browser code and must never contain credentials. The public UI can load locally without a working backend, but an analysis submission requires one.
+No environment variable or backend is required. To test a compatible
+researcher-operated backend, expand **Advanced · bring your own compatible
+backend** in the browser and enter its HTTPS URL. The URL is stored only in
+that browser’s `localStorage`; disconnect it to restore browser-only mode.
+Never place credentials in Vite environment files.
 
 ## Backend configuration
 
@@ -143,7 +186,12 @@ These checks do not require secrets, GPUs, Modal execution, OpenAI, WhAM inferen
 
 ## Privacy
 
-The browser transmits a recording only after the user explicitly selects the public sample, uploads a file, or completes a microphone recording and submits it for analysis. The browser sends that audio to `VITE_WHAM_API_URL/analyze`. Research edits, evaluation, exports, imported research packages, PCA, similarity, filtering, and outlier scoring are browser-only. Corpus persistence is opt-in.
+By default, uploaded and microphone audio stays on the device. The precomputed
+sample requires only same-origin static asset requests. Audio is transmitted
+only when a researcher explicitly configures a compatible backend and then
+starts an analysis. Research edits, evaluation, exports, imported research
+packages, PCA, similarity, filtering, and outlier scoring are browser-only.
+Corpus persistence is opt-in.
 
 The optional OpenAI request receives compact calculated evidence—not raw audio, the full embedding, filenames, or researcher annotations—and uses `store:false`. This setting avoids Responses application-state storage; default API abuse-monitoring retention can still apply unless the organization has approved data controls.
 
@@ -168,6 +216,7 @@ Use [CITATION.cff](CITATION.cff) for this software and cite the upstream WhAM an
 Vikas Sabbi is the project owner and maintainer. Governance and private
 reporting instructions are in [GOVERNANCE.md](GOVERNANCE.md),
 [SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
-The repository remains private while this release package is validated. Code
-repository and hosted-service release boundaries are separated in
+The code repository is public. Hosted-service release remains separate: the
+maintainer’s Modal application is intentionally stopped, while the public
+frontend is designed for a zero-cost static deployment. See
 [PUBLICATION_AUDIT.md](PUBLICATION_AUDIT.md).
