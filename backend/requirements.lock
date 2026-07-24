@@ -1,0 +1,26 @@
+# Whale Acoustic Lab production compatibility lock
+#
+# Python: 3.10 (Modal image)
+# This file locks the direct/runtime roots and Git sources that define the
+# tested WhAM image. It is intentionally not a claim that every transitive
+# wheel in a previously built Modal image has been captured. See SBOM.md and
+# DEPENDENCY_POLICY.md before rebuilding that image.
+
+Cython==3.2.8
+numpy==1.23.5
+torch==2.1.2
+torchaudio==2.1.2
+torchvision==0.16.2
+fastapi==0.115.11
+python-multipart==0.0.20
+openai==2.46.0
+pydantic==2.10.6
+
+# Project CETI WhAM/VampNet and the Git dependencies resolved by its pinned
+# VampNet package. These commits preserve the sources used by the existing
+# compatibility-tested image; do not move them without a new compatibility
+# test and license review.
+vampnet @ git+https://github.com/Project-CETI/wham.git@00a8b787c040db23cd51ac4417481a09ac354985#subdirectory=vampnet
+wavebeat @ git+https://github.com/hugofloresgarcia/wavebeat.git@d8642da31a1256aa952b2753566fff0aab7d9e2d
+lac @ git+https://github.com/hugofloresgarcia/lac.git@7761206878d1fba79aad314a38f975e9589af0a4
+descript-audiotools @ git+https://github.com/hugofloresgarcia/audiotools.git@54eecf66f38af6a15bd8c42f44c9f3e1746892bb

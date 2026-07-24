@@ -15,7 +15,9 @@ This file separates the Whale Acoustic Lab code license from third-party softwar
 
 Exact JavaScript dependency versions are locked in `frontend/package-lock.json`. Transitive dependency notices must be preserved when redistributing bundled dependencies.
 
-The Modal image also installs Python packages including Cython, NumPy, PyTorch, torchaudio, torchvision, FastAPI, python-multipart, OpenAI’s Python SDK, Audiotools, and WhAM/VampNet dependencies. These packages are fetched at image-build time and are not vendored here. Their own licenses apply; a production distributor should generate and review a locked Python software bill of materials before release.
+The Modal image also installs Cython, NumPy, PyTorch, torchaudio, torchvision, FastAPI, python-multipart, OpenAI’s Python SDK, Audiotools, and WhAM/VampNet dependencies. Direct versions and Git commits are recorded in `backend/requirements.lock`; the broader inventory and unresolved transitive/image concerns are in `SBOM.md`.
+
+VampNet’s dependency graph includes `wavebeat` at commit `d8642da31a1256aa952b2753566fff0aab7d9e2d` (GPL-3.0), `lac` at `7761206878d1fba79aad314a38f975e9589af0a4` (MIT), and `descript-audiotools` at `54eecf66f38af6a15bd8c42f44c9f3e1746892bb` (MIT). They are fetched into the private Modal image and are not vendored here. Any distribution of a service container requires a separate license/source-obligation review, including wavebeat’s GPL terms.
 
 ## Fonts
 

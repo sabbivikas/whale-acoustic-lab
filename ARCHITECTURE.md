@@ -23,6 +23,8 @@ flowchart LR
 
 Only an explicit analysis action sends audio. The backend temporarily writes decoded/trimmed WAV files for processing and removes them in `finally` blocks. Deployed provider logs, volumes, and retention settings remain operational responsibilities.
 
+The GPT branch receives the return value of `compact_evidence(...)`, an explicit whitelist containing calculated coda timing, cautious published-family comparisons, and bounded role evidence. It does not receive raw audio, full WhAM embeddings, filenames, or research annotations. The Responses call sets `store=False`.
+
 ## Research annotation and export
 
 ```mermaid
@@ -128,3 +130,24 @@ The public controls render independently of the Three.js chunk. An intersection-
 | Imported corpus | Browser memory | Never uploaded. |
 | Saved corpus | Browser IndexedDB after explicit save | Never uploaded by Corpus Explorer. |
 | Exports | Browser-generated downloads | Never uploaded by export actions. |
+
+## Provider and retention boundary
+
+```mermaid
+flowchart LR
+    WAV["User-authorized WAV"] -->|"Explicit analysis"| MODAL["Modal request/container"]
+    MODAL -->|"Temporary WAV; finally cleanup"| GPU["WhAM runtime + private weights Volume"]
+    MODAL --> COMPACT["Allowlisted calculated evidence"]
+    COMPACT -->|"store:false"| OPENAI["OpenAI Responses API"]
+    OPENAI --> CACHE["Narration JSON cache Volume"]
+    STATIC["Vercel static frontend"] -->|"Public assets and ordinary web requests"| BROWSER["Browser"]
+    BROWSER --> LOCAL["localStorage / opt-in IndexedDB / downloads"]
+```
+
+Verified code behavior, provider policy, and production-dashboard configuration are separate:
+
+- **Verified code:** explicit audio submission, temporary-file cleanup, compact GPT evidence, `store=False`, backend-only key access, browser-only research/evaluation/corpus calculations, localStorage drafts, and opt-in IndexedDB.
+- **Provider policy:** current public Modal, OpenAI, and Vercel documentation summarized in [PRIVACY.md](PRIVACY.md).
+- **Manual production verification:** actual plan/retention/logging, data-control, analytics, access, and deletion settings in each provider dashboard.
+
+The persistent narration Volume stores generated JSON keyed by a hash-derived cache key, not audio. Its current code has no TTL; [DATA_RETENTION.md](DATA_RETENTION.md) treats a cache retention/deletion policy as a launch requirement.

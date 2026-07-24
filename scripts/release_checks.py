@@ -29,6 +29,14 @@ REQUIRED_EC1_PUBLIC_FILES = {
     "references/coda_code/PROVENANCE.md",
     "references/coda_code/provenance.json",
 }
+REQUIRED_POLICY_FILES = {
+    "backend/requirements.lock",
+    "backend/requirements-dev.lock",
+    "SBOM.md",
+    "DEPENDENCY_POLICY.md",
+    "PRIVACY.md",
+    "DATA_RETENTION.md",
+}
 MODEL_SUFFIXES = {".pth", ".pt", ".ckpt", ".safetensors", ".onnx", ".h5", ".weights"}
 BINARY_SUFFIXES = {
     ".wav", ".wave", ".mp3", ".m4a", ".flac", ".png", ".jpg", ".jpeg",
@@ -134,6 +142,18 @@ def scan_bundle() -> list[tuple[str, str]]:
     return findings
 
 
+def validate_frontend_secret_boundary() -> list[tuple[str, str]]:
+    findings: list[tuple[str, str]] = []
+    source = ROOT / "frontend" / "src"
+    for path in source.rglob("*"):
+        if not path.is_file() or path.suffix.lower() in BINARY_SUFFIXES:
+            continue
+        text = text_from_bytes(path.read_bytes())
+        if text is not None and BUNDLE_FORBIDDEN_NAMES.search(text):
+            findings.append(("backend-only credential name in frontend source", relative(path)))
+    return findings
+
+
 def scan_history() -> tuple[list[tuple[str, str, str]], int]:
     commits = git("rev-list", "--all", check=False).stdout.decode().splitlines()
     findings: list[tuple[str, str, str]] = []
@@ -230,6 +250,50 @@ def validate_license_inventory() -> list[tuple[str, str]]:
     return findings
 
 
+def validate_dependency_and_privacy_inventory() -> list[tuple[str, str]]:
+    findings: list[tuple[str, str]] = []
+    for name in sorted(REQUIRED_POLICY_FILES):
+        if not (ROOT / name).is_file():
+            findings.append(("required dependency/privacy file missing", name))
+
+    production_lock = ROOT / "backend" / "requirements.lock"
+    if production_lock.is_file():
+        lock = production_lock.read_text(encoding="utf-8")
+        required_pins = (
+            "numpy==1.23.5",
+            "torch==2.1.2",
+            "torchaudio==2.1.2",
+            "torchvision==0.16.2",
+            "fastapi==0.115.11",
+            "python-multipart==0.0.20",
+            "openai==2.46.0",
+            "00a8b787c040db23cd51ac4417481a09ac354985",
+            "d8642da31a1256aa952b2753566fff0aab7d9e2d",
+            "7761206878d1fba79aad314a38f975e9589af0a4",
+            "54eecf66f38af6a15bd8c42f44c9f3e1746892bb",
+        )
+        for marker in required_pins:
+            if marker not in lock:
+                findings.append(("required production dependency pin missing", marker))
+
+    narrator = ROOT / "backend" / "evidence_narrator.py"
+    if narrator.is_file():
+        text = narrator.read_text(encoding="utf-8")
+        if not re.search(r"\bstore\s*=\s*False\b", text):
+            findings.append(("OpenAI Responses store:false protection missing", relative(narrator)))
+        compact_section = text.split("def compact_evidence", 1)[-1].split("def deterministic_narration", 1)[0]
+        for forbidden in ("raw_audio", '"embedding"', '"filename"', "researcher_note"):
+            if forbidden in compact_section:
+                findings.append(("forbidden field in compact GPT evidence builder", forbidden))
+
+    api = ROOT / "backend" / "wham_embedding_api.py"
+    if api.is_file():
+        text = api.read_text(encoding="utf-8")
+        if "compact_evidence(calculated)" not in text:
+            findings.append(("GPT narration bypasses compact evidence boundary", relative(api)))
+    return findings
+
+
 def validate_ci_configuration() -> list[tuple[str, str]]:
     findings: list[tuple[str, str]] = []
     path = ROOT / ".github" / "workflows" / "ci.yml"
@@ -282,6 +346,8 @@ def main() -> int:
     ok &= report("worktree contains no model checkpoints", validate_checkpoint_worktree())
     ok &= report("EC1 publishable-file inventory", validate_publishable_ec1_inventory())
     ok &= report("license and provenance inventory", validate_license_inventory())
+    ok &= report("dependency and privacy inventory", validate_dependency_and_privacy_inventory())
+    ok &= report("frontend contains no backend-only credential names", validate_frontend_secret_boundary())
     ok &= report("CI configuration is local-only and complete", validate_ci_configuration())
     if args.history:
         history_findings, commit_count = scan_history()

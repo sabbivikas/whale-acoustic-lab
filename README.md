@@ -105,7 +105,9 @@ Set `VITE_WHAM_API_URL` to a public backend origin. It is compiled into browser 
 
 The backend definition pins Project CETI WhAM source commit `00a8b787c040db23cd51ac4417481a09ac354985`. Production weights live in a Modal volume and are not part of this repository. `OPENAI_API_KEY` is read only by backend narration code and is supplied through the Modal secret named `whale-acoustic-lab-openai`.
 
-This repository intentionally does not provide a one-command deployment. Review [SECURITY.md](SECURITY.md), [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md), and the service-specific configuration before any private deployment.
+The reviewed direct Python compatibility set is in [backend/requirements.lock](backend/requirements.lock), developer tooling is in [backend/requirements-dev.lock](backend/requirements-dev.lock), and the runtime inventory is in [SBOM.md](SBOM.md). These files preserve the versions and Git commits used by the existing compatibility-tested definition; they do not authorize rebuilding or deploying it.
+
+This repository intentionally does not provide a one-command deployment. Review [SECURITY.md](SECURITY.md), [DEPENDENCY_POLICY.md](DEPENDENCY_POLICY.md), [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md), and the service-specific configuration before any private deployment.
 
 ## Testing
 
@@ -130,7 +132,9 @@ These checks do not require secrets, GPUs, Modal execution, OpenAI, WhAM inferen
 
 The browser transmits a recording only after the user explicitly selects the public sample, uploads a file, or completes a microphone recording and submits it for analysis. The browser sends that audio to `VITE_WHAM_API_URL/analyze`. Research edits, evaluation, exports, imported research packages, PCA, similarity, filtering, and outlier scoring are browser-only. Corpus persistence is opt-in.
 
-Do not use this project with recordings you are not authorized to process. Review the deployed backend/provider retention settings before processing sensitive or embargoed research data.
+The optional OpenAI request receives compact calculated evidence—not raw audio, the full embedding, filenames, or researcher annotations—and uses `store:false`. This setting avoids Responses application-state storage; default API abuse-monitoring retention can still apply unless the organization has approved data controls.
+
+Read [PRIVACY.md](PRIVACY.md) and [DATA_RETENTION.md](DATA_RETENTION.md). Do not use this project with recordings you are not authorized to process. Review the deployed Modal, OpenAI, and Vercel dashboard settings before processing sensitive or embargoed research data.
 
 ## Scientific limitations and reproducibility
 
@@ -148,4 +152,4 @@ Read [SCIENTIFIC_LIMITATIONS.md](SCIENTIFIC_LIMITATIONS.md) before interpreting 
 
 Use [CITATION.cff](CITATION.cff) for this software and cite the upstream WhAM and EC1 research sources appropriate to your use. Original Whale Acoustic Lab code is MIT-licensed. EC1-derived runtime indexes and the DSWP sample are CC BY 4.0; WhAM source and weights retain separate terms. See [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md) and the [EC1 attribution](references/coda_code/ATTRIBUTION.md).
 
-The repository is safe to place in an initial private repository and run CI. Complete the administrative and production-policy items in [PUBLICATION_AUDIT.md](PUBLICATION_AUDIT.md) before making it public.
+The repository remains private. Complete the administrative, dependency-image, legal, and production-dashboard items in [PUBLICATION_AUDIT.md](PUBLICATION_AUDIT.md) before making it public.

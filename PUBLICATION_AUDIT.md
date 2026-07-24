@@ -1,12 +1,12 @@
 # Final publication audit
 
-Audit date: 2026-07-22. No repository, commit, push, publication, or deployment was created during this audit.
+Audit updated: 2026-07-23. This repository remains private.
 
 ## Verdict
 
-**Safe to create the initial private repository and run CI.**
+**Private CI candidate; not yet safe for public release.**
 
-The EC1 license/provenance blocker is resolved for the DOI-pinned Zenodo archive and the three necessary derived runtime indexes. The project is **not yet marked safe for public release** because the administrative and production-policy items listed below remain open.
+The EC1 license/provenance blocker remains resolved. Dependency, SBOM, privacy, and retention documentation now exists, and release checks enforce the core data boundary. Public release remains blocked by the manual and legal items below.
 
 ## EC1 provenance and publication boundary
 
@@ -61,9 +61,9 @@ From that clean tree:
 
 - Redacted working-tree credential scan: passed.
 - Production frontend bundle credential scan: passed.
-- Git history scan: passed across zero commits (the repository has no initial commit).
+- Git history scan: passed across the two existing commits before this policy update.
 - Staged files: zero.
-- Tracked files: zero.
+- Tracked files reviewed before this policy update: 105.
 - Model/checkpoint files in worktree: zero.
 - Required EC1 publication inventory: passed.
 - Raw EC1 source files in publishable inventory: zero.
@@ -71,6 +71,20 @@ From that clean tree:
 - `frontend/.env.local`: ignored; contains only the public `VITE_WHAM_API_URL` endpoint without embedded URL credentials.
 - Research drafts remain in `localStorage`; corpus persistence is explicit IndexedDB; local annotation, evaluation, and export actions do not transmit those data.
 - Credential rotation required: no evidence requiring rotation was found.
+- `store:false` and the compact GPT evidence boundary are now release-tested.
+- Raw audio reaches Modal only after an explicit analysis action.
+- OpenAI receives no raw audio, full embedding, filename, or researcher note.
+- Research Mode, Annotation Evaluation, Corpus Explorer, PCA, annotation edits, and exports remain browser-only.
+- Provider defaults are documented separately from production dashboard settings; those dashboard settings are not yet verified.
+
+## Dependency and provider-policy result
+
+- Direct production compatibility roots and immutable Git sources are recorded in `backend/requirements.lock`.
+- Local developer tooling is recorded in `backend/requirements-dev.lock`.
+- `SBOM.md` records purpose, source, license where verified, runtime location, redistribution status, and unresolved concerns.
+- `DEPENDENCY_POLICY.md` prohibits silent upgrades of WhAM, PyTorch, NumPy, CUDA, and audio dependencies.
+- `PRIVACY.md` and `DATA_RETENTION.md` distinguish verified code behavior, current provider policy, and manual dashboard checks.
+- The exact deployed Debian/FFmpeg/Python-transitive/CUDA inventory cannot be recovered locally without inspecting or rebuilding the private Modal image; it remains a production verification item.
 
 ## License inventory
 
@@ -85,7 +99,7 @@ From that clean tree:
 ## Final local validation
 
 - Frontend tests: **60/60 passed**.
-- Pure local backend tests: **58/58 passed**, including three EC1 publication/runtime tests.
+- Pure local backend tests: **62/62 passed**, including three EC1 publication/runtime tests and four dependency/privacy boundary tests.
 - TypeScript type-check: passed.
 - Production frontend build: passed.
 - Python syntax/compile validation: passed.
@@ -118,7 +132,9 @@ The sole approved bundled audio is `frontend/public/samples/dswp-1.wav`, with DS
 1. Confirm the final copyright holder and contributor agreement for the project’s MIT license.
 2. Establish a monitored private security and conduct-reporting contact before public participation.
 3. Add reviewed screenshots created only with the attributed public sample or synthetic data.
-4. Generate and review a locked Python dependency/SBOM inventory for the deployed Modal image and WhAM transitive dependencies.
-5. Document production Modal, OpenAI, and Vercel retention/logging policies before inviting sensitive or embargoed research uploads.
+4. Capture and review the exact deployed Modal image inventory: base identity, Debian/APT packages, FFmpeg build, complete `pip freeze`/hashes, torch CUDA build, CUDA runtime, and driver.
+5. Manually verify and record production Modal, OpenAI, and Vercel dashboard settings; define/test narration-cache retention and deletion.
+6. Complete legal review of WhAM weight use and the GPL-3.0 wavebeat dependency for the intended public service/distribution model.
+7. Self-host DM Sans and Manrope, or explicitly accept and disclose the Google Fonts browser request.
 
-These items do not prevent creating an initial **private** repository and running the no-secret, CPU-only CI workflow. They must be completed or explicitly resolved before marking the repository safe for public release.
+These items do not prevent continued private CI. They must be completed or explicitly resolved before marking the repository safe for public release.

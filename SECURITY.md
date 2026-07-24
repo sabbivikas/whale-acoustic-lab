@@ -13,8 +13,22 @@ Include a minimal description, affected component, reproduction steps, and impac
 - Modal, Vercel, GitHub, and Hugging Face credentials must remain in their respective secret stores or local credential managers.
 - WhAM checkpoints must remain outside Git and outside frontend artifacts.
 - Research drafts remain in browser `localStorage`; saved corpora use IndexedDB only after explicit user action.
+- The OpenAI Responses call must retain `store=False` and must receive only `compact_evidence(...)`, never raw audio, a full embedding, filenames, or researcher notes.
+- `backend/requirements.lock`, `backend/requirements-dev.lock`, `SBOM.md`, `PRIVACY.md`, and `DATA_RETENTION.md` are release-controlled security artifacts.
 
 If a credential is ever committed, remove it from publication history and rotate it with the issuing service. History rewriting alone does not revoke a credential.
+
+## Production verification checklist
+
+Before accepting public recordings, manually record and review:
+
+- Modal plan, endpoint/request logging classification, log retention, log drains, Volume access/deletion, collaborator access, and Secret access;
+- OpenAI organization/project Data Controls, data-sharing opt-ins, and prompt-caching configuration;
+- Vercel deployment visibility, request/runtime logs, build logs, log drains, Web Analytics/Speed Insights, and team access;
+- the deployed image’s Python/OS/FFmpeg/CUDA inventory and vulnerability report; and
+- an operator-tested narration-cache deletion/retention procedure.
+
+See [PRIVACY.md](PRIVACY.md), [DATA_RETENTION.md](DATA_RETENTION.md), and [DEPENDENCY_POLICY.md](DEPENDENCY_POLICY.md). Provider defaults must not be represented as verified production settings until the dashboard has been checked.
 
 ## Supported versions
 
