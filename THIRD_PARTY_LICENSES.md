@@ -17,11 +17,11 @@ Exact JavaScript dependency versions are locked in `frontend/package-lock.json`.
 
 The Modal image also installs Cython, NumPy, PyTorch, torchaudio, torchvision, FastAPI, python-multipart, OpenAI’s Python SDK, Audiotools, and WhAM/VampNet dependencies. Direct versions and Git commits are recorded in `backend/requirements.lock`; the broader inventory and unresolved transitive/image concerns are in `SBOM.md`.
 
-VampNet’s dependency graph includes `wavebeat` at commit `d8642da31a1256aa952b2753566fff0aab7d9e2d` (GPL-3.0), `lac` at `7761206878d1fba79aad314a38f975e9589af0a4` (MIT), and `descript-audiotools` at `54eecf66f38af6a15bd8c42f44c9f3e1746892bb` (MIT). They are fetched into the private Modal image and are not vendored here. Any distribution of a service container requires a separate license/source-obligation review, including wavebeat’s GPL terms.
+VampNet upstream declares WaveBeat, but the pinned embedding path does not construct a beat tracker, load a WaveBeat checkpoint, or call beat-mask methods. The production image removes that unused installer declaration before installing VampNet. WaveBeat is therefore not part of the declared production runtime. `lac` at `7761206878d1fba79aad314a38f975e9589af0a4` and `descript-audiotools` at `54eecf66f38af6a15bd8c42f44c9f3e1746892bb` remain required MIT dependencies.
 
 ## Fonts
 
-The frontend requests **DM Sans** and **Manrope** from Google Fonts at runtime. Both families are distributed under SIL Open Font License 1.1. No font binaries are stored in this repository. Loading Google Fonts contacts Google; deployments with stricter privacy requirements should self-host properly licensed font files and retain their license texts.
+The frontend self-hosts unmodified **DM Sans** and **Manrope** variable fonts from the authoritative `google/fonts` repository at commit `9fab8b6cc7b2f20376914fd765d918c698c66d75`. Both are SIL Open Font License 1.1. Exact source paths, hashes, and unmodified OFL texts are in `frontend/public/fonts/`. No Google Fonts runtime request remains.
 
 ## Project CETI WhAM
 
@@ -31,7 +31,7 @@ The frontend requests **DM Sans** and **Manrope** from Google Fonts at runtime. 
 - Model weights: https://doi.org/10.5281/zenodo.17633708
 - Weight license: Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International (CC BY-NC-ND 4.0).
 
-WhAM source code and WhAM checkpoints are separate artifacts under separate terms. **No checkpoint is included in this repository.** The root MIT license does not cover the weights. Their noncommercial/no-derivatives restrictions require an independent use review before any public or commercial service uses them.
+WhAM source code and WhAM checkpoints are separate artifacts under separate terms. **No checkpoint is included in this repository or frontend.** The root MIT license does not cover the weights. Whale Acoustic Lab is presented as a noncommercial research and educational demo and does not claim clearance beyond the published license. Commercial operators must obtain their own permission or other valid legal basis. See [WHAM_WEIGHTS.md](WHAM_WEIGHTS.md).
 
 ## Dominica Sperm Whale Project dataset
 

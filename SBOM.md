@@ -16,8 +16,7 @@ Inventory date: 2026-07-23. This human-readable SBOM covers repository dependenc
 | python-multipart | 0.0.20 | PyPI | Multipart WAV uploads | Apache-2.0 | Modal image | No | Locked. |
 | OpenAI Python SDK | 2.46.0 | PyPI | Optional evidence narration | Apache-2.0 | Modal image | No | Locked to the most recent release predating the proven image; revalidate on rebuild. |
 | Pydantic | 2.10.6 | PyPI | VampNet declared runtime dependency | MIT | Modal image | No | Locked because VampNet declares this exact version. |
-| Project CETI WhAM/VampNet | `00a8b787c040db23cd51ac4417481a09ac354985` | GitHub | Acoustic embeddings | MIT | `/opt/wham` in Modal image | Source fetched during image build; not vendored | VampNet has unpinned transitive declarations; the resolved Git roots are locked below. |
-| wavebeat | `d8642da31a1256aa952b2753566fff0aab7d9e2d` | GitHub | Beat/click-related VampNet dependency | GPL-3.0 | Modal image | No | Copyleft obligations require review if containers/binaries are distributed. |
+| Project CETI WhAM/VampNet | `00a8b787c040db23cd51ac4417481a09ac354985` | GitHub | Acoustic embeddings | MIT | `/opt/wham` in Modal image | Source fetched during image build; not vendored | Upstream declares optional/general-purpose packages not used by the embedding API. The image removes the unused WaveBeat declaration before installation. |
 | lac | `7761206878d1fba79aad314a38f975e9589af0a4` | GitHub | Audio codec dependency | MIT | Modal image | No | Git source is now pinned in the lock. |
 | descript-audiotools | `54eecf66f38af6a15bd8c42f44c9f3e1746892bb` (package 0.7.3) | GitHub | Audio decoding/signal handling | MIT | Modal image | No | Git source is now pinned in the lock. |
 | FFmpeg | Debian image package; exact deployed version unresolved | Debian APT | Decode supported WAV variants | LGPL/GPL depending build options | Modal image; CI host | No | Capture `ffmpeg -version`, build configuration, and Debian package version from production before public launch. |
@@ -60,12 +59,12 @@ Exact direct and transitive versions are locked in `frontend/package-lock.json`.
 | WhAM `coarse.pth` | Zenodo 17633708, MD5 `0c1194ac517cd969aee295a362f60761` | Coarse checkpoint | CC BY-NC-ND 4.0 | Private Modal volume | No | Same restriction; never include in Git. |
 | DSWP sample | `frontend/public/samples/dswp-1.wav` | Attributed public sample | CC BY 4.0 | Git/frontend | Yes | Attribution retained in repository. |
 | EC1 derived indexes | Zenodo 10817697-derived files | Rhythm, context, segmentation references | CC BY 4.0 | Git/backend mounts | Yes | Modified-material attribution and provenance are separate from MIT code. |
-| Google Fonts | DM Sans, Manrope | Typography | SIL OFL 1.1 | Loaded from Google at runtime | No | Browser contacts Google; self-host before privacy-sensitive launch. |
+| DM Sans variable font | google/fonts commit `9fab8b6cc7b2f20376914fd765d918c698c66d75` | Typography | SIL OFL 1.1 | Self-hosted frontend asset | Yes | Unmodified font and OFL text are included. |
+| Manrope variable font | google/fonts commit `9fab8b6cc7b2f20376914fd765d918c698c66d75` | Typography | SIL OFL 1.1 | Self-hosted frontend asset | Yes | Unmodified font and OFL text are included. |
 
 ## Unresolved release concerns
 
 1. Capture an immutable deployed-image inventory: Debian base identity, APT package versions, `pip freeze`, wheel hashes, torch CUDA build, CUDA runtime, and driver.
 2. Verify `synchronicity` license metadata and all transitive Python licenses.
-3. Review GPL-3.0 wavebeat obligations for any distribution of the service container.
-4. Complete legal review of WhAM model-weight use, especially the noncommercial/no-derivatives terms.
-5. Run vulnerability scanning against the captured production image without changing compatibility-critical versions silently.
+3. Complete legal review of WhAM model-weight use, especially the noncommercial/no-derivatives terms.
+4. Run vulnerability scanning against the captured production image without changing compatibility-critical versions silently.

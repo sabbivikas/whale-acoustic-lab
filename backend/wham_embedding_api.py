@@ -30,6 +30,7 @@ image = (
     .run_commands(
         f"git clone --filter=blob:none https://github.com/Project-CETI/wham.git /opt/wham && "
         f"cd /opt/wham && git checkout {WHAM_COMMIT}",
+        "sed -i '/wavebeat @ git+/d' /opt/wham/vampnet/setup.py",
         "python -m pip install --no-build-isolation -e /opt/wham/vampnet",
         "python -m pip install --force-reinstall torch==2.1.2 torchaudio==2.1.2 torchvision==0.16.2",
         "python -m pip install --force-reinstall 'numpy<1.24'",
@@ -129,7 +130,6 @@ class WhamEmbeddingAPI:
             codec_ckpt=codec_path,
             coarse_ckpt=coarse_path,
             coarse2fine_ckpt=None,
-            wavebeat_ckpt=None,
             device="cuda",
         )
 
@@ -372,3 +372,46 @@ class WhamEmbeddingAPI:
                     os.unlink(audio_path)
 
         return web_app
+
+
+cache_admin_image = (
+    modal.Image.debian_slim(python_version="3.10")
+    .add_local_file(
+        PROJECT_DIR / "backend" / "evidence_narrator.py",
+        remote_path="/root/evidence_narrator.py",
+        copy=True,
+    )
+)
+
+
+@app.function(
+    image=cache_admin_image,
+    volumes={NARRATION_CACHE_DIR: narration_cache_volume},
+    timeout=60,
+)
+def delete_narration_cache_entry(audio_sha256: str) -> dict:
+    """Operator-only Modal function; it is not exposed as an HTTP route."""
+    from evidence_narrator import delete_cached_narration
+
+    narration_cache_volume.reload()
+    deleted = delete_cached_narration(audio_sha256)
+    if deleted:
+        narration_cache_volume.commit()
+    return {"deleted": deleted}
+
+
+@app.function(
+    image=cache_admin_image,
+    volumes={NARRATION_CACHE_DIR: narration_cache_volume},
+    schedule=modal.Cron("0 4 * * *"),
+    timeout=60,
+)
+def purge_expired_narration_cache() -> dict:
+    """Scheduled operator-side cleanup; it is not exposed as an HTTP route."""
+    from evidence_narrator import delete_expired_cached_narrations
+
+    narration_cache_volume.reload()
+    deleted_count = delete_expired_cached_narrations()
+    if deleted_count:
+        narration_cache_volume.commit()
+    return {"deleted_count": deleted_count}

@@ -25,7 +25,7 @@ Manual verification: confirm the production OpenAI organization/project Data Con
 
 ## Modal boundary
 
-The WAV request is sent to the Modal-hosted FastAPI endpoint. The application reads it into request memory and writes only a trimmed temporary WAV for inference; that file is deleted. WhAM weights remain in a private persistent volume. Generated narration JSON may be cached in a separate persistent Modal volume using a hash-derived key; raw audio and embeddings are not written to that cache.
+The WAV request is sent to the Modal-hosted FastAPI endpoint. The application reads it into request memory and writes only a trimmed temporary WAV for inference; that file is deleted. WhAM weights remain in a private persistent volume. Generated narration JSON may be cached for 30 days in a separate persistent Modal volume using a hash-derived key. The minimal cache envelope contains schema version, creation/expiration timestamps, and validated narration only; it excludes raw audio, embeddings, filenames, research notes, the source audio hash, and personal information. Expired entries cannot be returned as cache hits.
 
 Modal documents encryption in transit/at rest, container reuse, persistent Volumes, Secret injection as environment variables, and plan-dependent log retention. Its security guide distinguishes request/response handling by endpoint type. Confirm in the production dashboard how this `@modal.asgi_app` endpoint is classified and which logs/retention apply. See [Modal security and privacy](https://modal.com/docs/guide/security), [Secrets](https://modal.com/docs/guide/secrets), [Volumes](https://modal.com/docs/guide/volumes), and [container lifecycle](https://modal.com/docs/guide/lifecycle-functions).
 
@@ -37,16 +37,16 @@ The repository deploys a static Vite frontend; it contains no Vercel Function ha
 
 Manual verification: deployment visibility, runtime/request log retention, build logs, log drains, Web Analytics, Speed Insights, access logs, team access, and deletion/retention settings.
 
-## Other browser requests
+## Font requests
 
-The frontend loads DM Sans and Manrope from Google Fonts. That causes the browser to contact Google and can expose ordinary request metadata such as IP address and user agent. Self-host the licensed fonts before a privacy-sensitive public launch.
+DM Sans and Manrope are self-hosted from `/fonts/` with their OFL texts. The frontend no longer contacts Google Fonts.
 
 ## User controls and deletion
 
 - Research draft: “Restore automatic analysis” clears the saved draft for that audio hash; site-data controls can clear all localStorage.
 - Saved corpus: delete it in Corpus Explorer, or clear site IndexedDB.
 - Downloads: delete exported files using the operating system.
-- Modal narration cache: an operator must delete the relevant cache object or volume; no public self-service endpoint exists.
+- Modal narration cache: an authenticated operator can invoke the non-HTTP `delete_narration_cache_entry` Modal function with the full audio SHA-256. It returns only whether an entry was deleted. A daily authenticated scheduled function removes expired/invalid envelopes. No public cache-list or cache-delete endpoint exists.
 - Provider logs: use the applicable provider dashboard/support and retention process; the application cannot retract records already retained by a provider.
 - Uploaded audio: the application keeps no product database copy, but provider-level logs/settings must still be verified.
 

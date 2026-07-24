@@ -34,6 +34,7 @@ image = (
     .run_commands(
         f"git clone --filter=blob:none https://github.com/Project-CETI/wham.git /opt/wham && "
         f"cd /opt/wham && git checkout {WHAM_COMMIT}",
+        "sed -i '/wavebeat @ git+/d' /opt/wham/vampnet/setup.py",
         "python -m pip install --no-build-isolation -e /opt/wham/vampnet",
         "python -m pip install --force-reinstall torch==2.1.2 torchaudio==2.1.2 torchvision==0.16.2",
         "python -m pip install --force-reinstall 'numpy<1.24'",
@@ -151,7 +152,6 @@ class ReferenceIndexer:
             codec_ckpt=codec_path,
             coarse_ckpt=coarse_path,
             coarse2fine_ckpt=None,
-            wavebeat_ckpt=None,
             device="cuda",
         )
         module_path = "/opt/wham/vampnet/scripts/utils/visualize_embeddings.py"

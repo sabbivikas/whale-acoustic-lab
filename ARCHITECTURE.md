@@ -150,4 +150,8 @@ Verified code behavior, provider policy, and production-dashboard configuration 
 - **Provider policy:** current public Modal, OpenAI, and Vercel documentation summarized in [PRIVACY.md](PRIVACY.md).
 - **Manual production verification:** actual plan/retention/logging, data-control, analytics, access, and deletion settings in each provider dashboard.
 
-The persistent narration Volume stores generated JSON keyed by a hash-derived cache key, not audio. Its current code has no TTL; [DATA_RETENTION.md](DATA_RETENTION.md) treats a cache retention/deletion policy as a launch requirement.
+The persistent narration Volume stores a minimal JSON envelope keyed by a hash-derived cache key, not audio or evidence inputs. Entries are valid for 30 days; expired entries are rejected, and a daily authenticated scheduled function removes expired/invalid envelopes. A separate authenticated Modal function deletes one hash-addressed entry and is not exposed through FastAPI. See [DATA_RETENTION.md](DATA_RETENTION.md).
+
+## WhAM runtime boundary
+
+The production embedding path loads only the private `codec.pth` and `coarse.pth` checkpoints. WaveBeat is not constructed, configured, or supplied a checkpoint; its unused upstream installer declaration is removed before VampNet installation. The public FastAPI application has only `POST /embed` and `POST /analyze` and does not mount or serve `/weights`. See [WHAM_WEIGHTS.md](WHAM_WEIGHTS.md).

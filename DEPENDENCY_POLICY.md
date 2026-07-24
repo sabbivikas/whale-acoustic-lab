@@ -43,4 +43,4 @@ Security updates do not override scientific compatibility. For a critical vulner
 
 ## Licenses
 
-The project MIT license does not relicense dependencies, datasets, or model weights. GPL-3.0 wavebeat, CC BY-NC-ND WhAM weights, CC BY EC1/DSWP materials, and font licenses retain their own terms. Distribution of a container or bundled artifact requires a fresh license-notice and source-obligation review.
+The project MIT license does not relicense dependencies, datasets, or model weights. The production image deliberately removes VampNet’s unused WaveBeat installer declaration; reintroducing WaveBeat requires a new reachability, scientific-need, compatibility, and GPL review. CC BY-NC-ND WhAM weights, CC BY EC1/DSWP materials, and font licenses retain their own terms. Distribution of a container or bundled artifact requires a fresh license-notice and source-obligation review.

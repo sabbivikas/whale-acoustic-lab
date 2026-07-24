@@ -21,6 +21,8 @@ class DataPolicyTests(unittest.TestCase):
             "DEPENDENCY_POLICY.md",
             "PRIVACY.md",
             "DATA_RETENTION.md",
+            "WHAM_WEIGHTS.md",
+            "backend/WAVEBEAT_AUDIT.md",
         }
         self.assertEqual([], sorted(name for name in required if not (ROOT / name).is_file()))
 
@@ -102,6 +104,23 @@ class DataPolicyTests(unittest.TestCase):
                 text = path.read_text(encoding="utf-8")
                 for network_api in ("fetch(", "XMLHttpRequest", "sendBeacon(", "new WebSocket"):
                     self.assertNotIn(network_api, text, f"{path}: browser-only module uses {network_api}")
+
+    def test_weight_files_are_not_public_and_wavebeat_is_not_production_configured(self) -> None:
+        api = (ROOT / "backend/wham_embedding_api.py").read_text(encoding="utf-8")
+        lock = (ROOT / "backend/requirements.lock").read_text(encoding="utf-8")
+        self.assertIn("sed -i '/wavebeat @ git+/d'", api.lower())
+        self.assertNotIn("wavebeat_ckpt", api.lower())
+        self.assertNotIn("wavebeat @", lock.lower())
+        self.assertNotIn("StaticFiles", api)
+        self.assertNotIn("FileResponse", api)
+        self.assertNotRegex(api, r'@web_app\.(?:get|post|delete)\([^)]*(?:weight|checkpoint)')
+
+    def test_fonts_are_local_and_google_fonts_is_not_requested(self) -> None:
+        styles = (ROOT / "frontend/src/styles.css").read_text(encoding="utf-8")
+        self.assertIn("/fonts/dm-sans/DMSans-Variable.ttf", styles)
+        self.assertIn("/fonts/manrope/Manrope-Variable.ttf", styles)
+        self.assertNotIn("fonts.googleapis.com", styles)
+        self.assertNotIn("fonts.gstatic.com", styles)
 
 
 if __name__ == "__main__":

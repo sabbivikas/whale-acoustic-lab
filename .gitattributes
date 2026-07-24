@@ -1,0 +1,2 @@
+# Preserve the authoritative upstream font license bytes without CRLF normalization.
+frontend/public/fonts/**/OFL.txt binary

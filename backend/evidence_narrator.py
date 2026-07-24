@@ -8,6 +8,7 @@ import logging
 import os
 import re
 import tempfile
+import time
 from pathlib import Path
 from typing import Any, Callable
 
@@ -18,6 +19,8 @@ EVIDENCE_VERSION = "whale-calculated-evidence-v1"
 MAX_OUTPUT_TOKENS = 550
 TIMEOUT_SECONDS = 15.0
 CACHE_DIR = Path(os.environ.get("NARRATION_CACHE_DIR", "/narration-cache"))
+CACHE_SCHEMA_VERSION = 1
+CACHE_TTL_SECONDS = 30 * 24 * 60 * 60
 STATUS_GENERATED = "generated"
 STATUS_CACHE_HIT = "cache_hit"
 STATUS_FALLBACK = "deterministic_fallback"
@@ -180,19 +183,84 @@ def cache_key(audio_sha256: str) -> str:
     return hashlib.sha256(material.encode("utf-8")).hexdigest()
 
 
-def _read_cache(path: Path) -> dict[str, Any] | None:
+def _read_cache(path: Path, *, now: float | None = None) -> dict[str, Any] | None:
     try:
-        return json.loads(path.read_text(encoding="utf-8"))
+        envelope = json.loads(path.read_text(encoding="utf-8"))
     except (FileNotFoundError, OSError, json.JSONDecodeError):
         return None
+    if (
+        not isinstance(envelope, dict)
+        or set(envelope) != {"schema_version", "created_at_unix", "expires_at_unix", "content"}
+        or envelope.get("schema_version") != CACHE_SCHEMA_VERSION
+        or not isinstance(envelope.get("created_at_unix"), (int, float))
+        or not isinstance(envelope.get("expires_at_unix"), (int, float))
+        or not isinstance(envelope.get("content"), dict)
+    ):
+        return None
+    current_time = time.time() if now is None else now
+    if envelope["expires_at_unix"] <= current_time:
+        return None
+    return envelope["content"]
 
 
-def _write_cache(path: Path, value: dict[str, Any]) -> None:
+def _write_cache(path: Path, value: dict[str, Any], *, now: float | None = None) -> None:
+    created_at = time.time() if now is None else now
+    envelope = {
+        "schema_version": CACHE_SCHEMA_VERSION,
+        "created_at_unix": created_at,
+        "expires_at_unix": created_at + CACHE_TTL_SECONDS,
+        "content": value,
+    }
     path.parent.mkdir(parents=True, exist_ok=True)
     with tempfile.NamedTemporaryFile("w", encoding="utf-8", dir=path.parent, delete=False) as target:
-        json.dump(value, target, separators=(",", ":"), sort_keys=True)
+        json.dump(envelope, target, separators=(",", ":"), sort_keys=True)
         temporary = Path(target.name)
     temporary.replace(path)
+
+
+def delete_cached_narration(
+    audio_sha256: str,
+    *,
+    cache_dir: Path = CACHE_DIR,
+) -> bool:
+    """Delete one hash-addressed cache entry without reading or returning its content."""
+    if not re.fullmatch(r"[a-fA-F0-9]{64}", audio_sha256):
+        raise ValueError("audio_sha256 must contain exactly 64 hexadecimal characters")
+    path = cache_dir / f"{cache_key(audio_sha256)}.json"
+    try:
+        path.unlink()
+        return True
+    except FileNotFoundError:
+        return False
+
+
+def delete_expired_cached_narrations(
+    *,
+    cache_dir: Path = CACHE_DIR,
+    now: float | None = None,
+) -> int:
+    """Delete expired/invalid cache envelopes without returning their contents."""
+    current_time = time.time() if now is None else now
+    deleted = 0
+    try:
+        paths = list(cache_dir.glob("*.json"))
+    except OSError:
+        return 0
+    for path in paths:
+        try:
+            envelope = json.loads(path.read_text(encoding="utf-8"))
+            expires_at = envelope.get("expires_at_unix") if isinstance(envelope, dict) else None
+            invalid_or_expired = not isinstance(expires_at, (int, float)) or expires_at <= current_time
+            if invalid_or_expired:
+                path.unlink()
+                deleted += 1
+        except (OSError, json.JSONDecodeError):
+            try:
+                path.unlink()
+                deleted += 1
+            except OSError:
+                pass
+    return deleted
 
 
 def narrate_evidence(
@@ -202,11 +270,12 @@ def narrate_evidence(
     api_key: str | None = None,
     cache_dir: Path = CACHE_DIR,
     client_factory: Callable[..., Any] | None = None,
+    now: float | None = None,
 ) -> dict[str, Any]:
     fallback = deterministic_narration(evidence)
     key = cache_key(audio_sha256)
     cache_path = cache_dir / f"{key}.json"
-    cached = _read_cache(cache_path)
+    cached = _read_cache(cache_path, now=now)
     if cached:
         try:
             content = validate_narration(cached, evidence)
@@ -245,7 +314,7 @@ def narrate_evidence(
         stage = "response_json"
         content = validate_narration(json.loads(response.output_text), evidence)
         stage = "cache_write"
-        _write_cache(cache_path, content)
+        _write_cache(cache_path, content, now=now)
         return _result(STATUS_GENERATED, content)
     except ValueError as exc:
         LOGGER.warning("evidence_narrator_fallback stage=%s validation_error=%s", stage, exc)

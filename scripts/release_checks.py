@@ -8,6 +8,7 @@ credential material. It does not call services or execute project modules.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import re
 import subprocess
 import sys
@@ -36,11 +37,13 @@ REQUIRED_POLICY_FILES = {
     "DEPENDENCY_POLICY.md",
     "PRIVACY.md",
     "DATA_RETENTION.md",
+    "WHAM_WEIGHTS.md",
+    "backend/WAVEBEAT_AUDIT.md",
 }
 MODEL_SUFFIXES = {".pth", ".pt", ".ckpt", ".safetensors", ".onnx", ".h5", ".weights"}
 BINARY_SUFFIXES = {
     ".wav", ".wave", ".mp3", ".m4a", ".flac", ".png", ".jpg", ".jpeg",
-    ".gif", ".webp", ".ico", ".pdf", ".p", ".zip", ".gz", ".woff", ".woff2",
+    ".gif", ".webp", ".ico", ".pdf", ".p", ".zip", ".gz", ".woff", ".woff2", ".ttf", ".otf",
 }
 SKIP_PARTS = {".git", "node_modules", "__pycache__", ".pytest_cache", ".mypy_cache", ".ruff_cache"}
 
@@ -268,7 +271,6 @@ def validate_dependency_and_privacy_inventory() -> list[tuple[str, str]]:
             "python-multipart==0.0.20",
             "openai==2.46.0",
             "00a8b787c040db23cd51ac4417481a09ac354985",
-            "d8642da31a1256aa952b2753566fff0aab7d9e2d",
             "7761206878d1fba79aad314a38f975e9589af0a4",
             "54eecf66f38af6a15bd8c42f44c9f3e1746892bb",
         )
@@ -291,6 +293,59 @@ def validate_dependency_and_privacy_inventory() -> list[tuple[str, str]]:
         text = api.read_text(encoding="utf-8")
         if "compact_evidence(calculated)" not in text:
             findings.append(("GPT narration bypasses compact evidence boundary", relative(api)))
+
+        lowered = text.lower()
+        if "sed -i '/wavebeat @ git+/d'" not in lowered:
+            findings.append(("WaveBeat installer removal missing", relative(api)))
+        if "wavebeat_ckpt" in lowered or "wavebeat.pth" in lowered:
+            findings.append(("WaveBeat configuration remains in production API", relative(api)))
+        if re.search(r"@web_app\.(?:get|post|delete|put|patch)\([^)]*(?:weight|checkpoint)", lowered):
+            findings.append(("public model-weight route detected", relative(api)))
+        if "staticfiles" in lowered or "fileresponse" in lowered:
+            findings.append(("file-serving primitive present in production API", relative(api)))
+        if 'modal.cron("0 4 * * *")' not in lowered:
+            findings.append(("scheduled narration-cache cleanup missing", relative(api)))
+        if "def delete_narration_cache_entry(" not in text:
+            findings.append(("operator narration-cache deletion missing", relative(api)))
+
+    if production_lock.is_file() and "wavebeat @" in production_lock.read_text(encoding="utf-8").lower():
+        findings.append(("WaveBeat dependency remains in production lock", relative(production_lock)))
+
+    narrator = ROOT / "backend" / "evidence_narrator.py"
+    if narrator.is_file():
+        text = narrator.read_text(encoding="utf-8")
+        ttl_match = re.search(r"^CACHE_TTL_SECONDS\s*=\s*30\s*\*\s*24\s*\*\s*60\s*\*\s*60\s*$", text, re.MULTILINE)
+        if not ttl_match:
+            findings.append(("fixed 30-day narration-cache TTL missing", relative(narrator)))
+        cache_write = text.split("def _write_cache", 1)[-1].split("def delete_cached_narration", 1)[0]
+        for forbidden in ("raw_audio", "embedding", "filename", "researcher_note", "audio_sha256"):
+            if forbidden in cache_write:
+                findings.append(("forbidden narration-cache field", forbidden))
+
+    font_files = {
+        "frontend/public/fonts/dm-sans/DMSans-Variable.ttf": "8cd08d97e89c24d0aa92edd2f0f4c8ee6195eee9b7c9f154865a58b02f0c1c0d",
+        "frontend/public/fonts/dm-sans/OFL.txt": "9af36190332437f5ecd09974de43c1f7c77a310a996cdd8ceb25628b458840e1",
+        "frontend/public/fonts/manrope/Manrope-Variable.ttf": "d0639be45d0af36e798172419d7bd173c4bd4f29e2b76cbb69db1d11bf8b0a40",
+        "frontend/public/fonts/manrope/OFL.txt": "e01b637272e0cbdfb240184dd98ea5cc671556d9894dae2668d92ab2c906787c",
+    }
+    for name, expected_hash in font_files.items():
+        path = ROOT / name
+        if not path.is_file():
+            findings.append(("required self-hosted font/license missing", name))
+        elif hashlib.sha256(path.read_bytes()).hexdigest() != expected_hash:
+            findings.append(("self-hosted font/license hash changed", name))
+
+    frontend_text = ""
+    for path in (ROOT / "frontend" / "src").rglob("*"):
+        if path.is_file() and path.suffix in {".ts", ".css", ".html"}:
+            frontend_text += path.read_text(encoding="utf-8", errors="ignore")
+    if "fonts.googleapis.com" in frontend_text or "fonts.gstatic.com" in frontend_text:
+        findings.append(("external Google Fonts request remains", "frontend/src"))
+    for marker in ("/fonts/dm-sans/DMSans-Variable.ttf", "/fonts/manrope/Manrope-Variable.ttf"):
+        if marker not in frontend_text:
+            findings.append(("self-hosted font path missing", marker))
+    if "CC BY-NC-ND 4.0" not in frontend_text or "Noncommercial research" not in frontend_text:
+        findings.append(("public WhAM weight notice missing", "frontend/src/main.ts"))
     return findings
 
 

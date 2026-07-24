@@ -47,6 +47,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
       <h1>Explore the rhythm inside a sperm-whale call.</h1>
       <p class="lede">Upload, record, or try a public sample. Whale Acoustic Lab measures click timing, separates probable codas, and compares acoustic structure with published research.</p>
       <p class="science-promise"><strong>Scientific boundary:</strong> this app analyzes acoustic structure. It does not literally translate whale language.</p>
+      <p class="model-license-notice"><strong>Noncommercial research and educational demo.</strong> WhAM source is MIT-licensed; its model weights are separately CC BY-NC-ND 4.0.</p>
     </div>
     <div class="capture-stage">
       <input id="file" type="file" accept=".wav,audio/wav" hidden>
@@ -84,7 +85,7 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 
   <section id="corpus-view" class="corpus-view hidden" aria-label="Browser-only corpus explorer"></section>
 
-  <footer><span>Powered by Project CETI’s WhAM model</span><span>Acoustic structure · Not semantic translation</span></footer>
+  <footer><span>Noncommercial research demo · Project CETI WhAM</span><span>Acoustic structure · Not semantic translation</span></footer>
 </main>`;
 
 const get = <T extends Element>(selector: string) => document.querySelector<T>(selector)!;
@@ -200,7 +201,7 @@ function renderArtTeaser(): HTMLElement {
 
 function renderSources(): HTMLElement {
   const section = document.createElement("section"); section.id = "sources"; section.className = "sources product-section";
-  section.innerHTML = `<div class="section-heading"><span class="kicker">Sources and scientific limitations</span><h2>What supports this experience</h2></div><p class="limits-callout">Scientists have not translated sperm-whale language. This app analyzes acoustic structure and presents evidence-grounded hypotheses and creative analogies.</p><ul><li><a href="https://github.com/Project-CETI/wham" target="_blank" rel="noreferrer">Project CETI WhAM source</a> · MIT software license; model weights distributed separately</li><li><a href="https://huggingface.co/datasets/orrp/DSWP" target="_blank" rel="noreferrer">Dominica Sperm Whale Project public dataset</a> · CC BY 4.0</li><li><a href="https://www.nature.com/articles/s41467-024-47221-8" target="_blank" rel="noreferrer">Sharma et al., Nature Communications (2024)</a></li><li><a href="https://doi.org/10.5281/zenodo.10817697" target="_blank" rel="noreferrer">Zenodo EC1 data release</a> · CC BY 4.0</li></ul><button class="return-top">Return to top ↑</button>`;
+  section.innerHTML = `<div class="section-heading"><span class="kicker">Sources and scientific limitations</span><h2>What supports this experience</h2></div><p class="limits-callout">Scientists have not translated sperm-whale language. This app analyzes acoustic structure and presents evidence-grounded hypotheses and creative analogies.</p><ul><li><a href="https://github.com/Project-CETI/wham" target="_blank" rel="noreferrer">Project CETI WhAM source</a> · MIT software license</li><li><a href="https://doi.org/10.5281/zenodo.17633708" target="_blank" rel="noreferrer">WhAM model weights</a> · separate CC BY-NC-ND 4.0 terms; this is a noncommercial research and educational demo</li><li><a href="https://huggingface.co/datasets/orrp/DSWP" target="_blank" rel="noreferrer">Dominica Sperm Whale Project public dataset</a> · CC BY 4.0</li><li><a href="https://www.nature.com/articles/s41467-024-47221-8" target="_blank" rel="noreferrer">Sharma et al., Nature Communications (2024)</a></li><li><a href="https://doi.org/10.5281/zenodo.10817697" target="_blank" rel="noreferrer">Zenodo EC1 data release</a> · CC BY 4.0</li></ul><button class="return-top">Return to top ↑</button>`;
   section.querySelector<HTMLButtonElement>(".return-top")!.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" }); return section;
 }
 

@@ -83,6 +83,9 @@ From that clean tree:
 - Local developer tooling is recorded in `backend/requirements-dev.lock`.
 - `SBOM.md` records purpose, source, license where verified, runtime location, redistribution status, and unresolved concerns.
 - `DEPENDENCY_POLICY.md` prohibits silent upgrades of WhAM, PyTorch, NumPy, CUDA, and audio dependencies.
+- WaveBeat was confirmed unreachable from the configured embedding features and removed from the declared production installer path; no WaveBeat checkpoint is configured.
+- DM Sans and Manrope are now self-hosted from a pinned authoritative Google Fonts commit with their OFL texts.
+- Narration-cache entries have a fixed 30-day validity period and an authenticated, non-HTTP operator deletion function.
 - `PRIVACY.md` and `DATA_RETENTION.md` distinguish verified code behavior, current provider policy, and manual dashboard checks.
 - The exact deployed Debian/FFmpeg/Python-transitive/CUDA inventory cannot be recovered locally without inspecting or rebuilding the private Modal image; it remains a production verification item.
 
@@ -94,12 +97,12 @@ From that clean tree:
 - Project CETI WhAM source: MIT at the pinned source repository/commit.
 - WhAM model weights: separately CC BY-NC-ND 4.0; not included.
 - Three.js: MIT.
-- DM Sans and Manrope: SIL Open Font License 1.1; fetched at runtime, not vendored.
+- DM Sans and Manrope: SIL Open Font License 1.1; self-hosted with pinned provenance and license texts.
 
 ## Final local validation
 
 - Frontend tests: **60/60 passed**.
-- Pure local backend tests: **62/62 passed**, including three EC1 publication/runtime tests and four dependency/privacy boundary tests.
+- Pure local backend tests: **70/70 passed**, including three EC1 publication/runtime tests plus WaveBeat, weight-route, cache-lifecycle, font-hosting, and privacy-boundary tests.
 - TypeScript type-check: passed.
 - Production frontend build: passed.
 - Python syntax/compile validation: passed.
@@ -133,8 +136,7 @@ The sole approved bundled audio is `frontend/public/samples/dswp-1.wav`, with DS
 2. Establish a monitored private security and conduct-reporting contact before public participation.
 3. Add reviewed screenshots created only with the attributed public sample or synthetic data.
 4. Capture and review the exact deployed Modal image inventory: base identity, Debian/APT packages, FFmpeg build, complete `pip freeze`/hashes, torch CUDA build, CUDA runtime, and driver.
-5. Manually verify and record production Modal, OpenAI, and Vercel dashboard settings; define/test narration-cache retention and deletion.
-6. Complete legal review of WhAM weight use and the GPL-3.0 wavebeat dependency for the intended public service/distribution model.
-7. Self-host DM Sans and Manrope, or explicitly accept and disclose the Google Fonts browser request.
+5. Manually verify and record production Modal, OpenAI, and Vercel dashboard settings; operator-test cache deletion and periodic expired-file cleanup.
+6. Complete legal review of WhAM checkpoint use for the intended service; commercial operators must obtain their own permission or other valid legal basis.
 
 These items do not prevent continued private CI. They must be completed or explicitly resolved before marking the repository safe for public release.

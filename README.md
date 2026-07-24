@@ -88,6 +88,8 @@ The production backend:
 
 WhAM embeddings are acoustic representations, not semantic translations. Model checkpoints are not included in this repository and are not covered by this project’s MIT license.
 
+Whale Acoustic Lab is presented as a **noncommercial research and educational demo**. The WhAM source is MIT-licensed, while its separately distributed checkpoints are CC BY-NC-ND 4.0. Commercial operators must obtain their own permission or other valid legal basis. See [WHAM_WEIGHTS.md](WHAM_WEIGHTS.md).
+
 ## Local frontend setup
 
 Requirements: a current Node.js LTS release and npm.
@@ -105,7 +107,7 @@ Set `VITE_WHAM_API_URL` to a public backend origin. It is compiled into browser 
 
 The backend definition pins Project CETI WhAM source commit `00a8b787c040db23cd51ac4417481a09ac354985`. Production weights live in a Modal volume and are not part of this repository. `OPENAI_API_KEY` is read only by backend narration code and is supplied through the Modal secret named `whale-acoustic-lab-openai`.
 
-The reviewed direct Python compatibility set is in [backend/requirements.lock](backend/requirements.lock), developer tooling is in [backend/requirements-dev.lock](backend/requirements-dev.lock), and the runtime inventory is in [SBOM.md](SBOM.md). These files preserve the versions and Git commits used by the existing compatibility-tested definition; they do not authorize rebuilding or deploying it.
+The reviewed direct Python compatibility set is in [backend/requirements.lock](backend/requirements.lock), developer tooling is in [backend/requirements-dev.lock](backend/requirements-dev.lock), and the runtime inventory is in [SBOM.md](SBOM.md). The production embedding path removes VampNet’s unused WaveBeat installer declaration and never loads a WaveBeat checkpoint. These files preserve the versions and Git commits used by the existing compatibility-tested definition; they do not authorize rebuilding or deploying it.
 
 This repository intentionally does not provide a one-command deployment. Review [SECURITY.md](SECURITY.md), [DEPENDENCY_POLICY.md](DEPENDENCY_POLICY.md), [THIRD_PARTY_LICENSES.md](THIRD_PARTY_LICENSES.md), and the service-specific configuration before any private deployment.
 

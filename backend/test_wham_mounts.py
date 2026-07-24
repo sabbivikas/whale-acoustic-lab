@@ -87,9 +87,21 @@ class WhamModalMountTests(unittest.TestCase):
     def test_openai_sdk_is_installed_in_the_modal_image(self) -> None:
         self.assertIn("'openai>=2,<3'", self.source)
 
+    def test_production_embedding_path_removes_unused_wavebeat_dependency(self) -> None:
+        lock = (BACKEND_DIR / "requirements.lock").read_text(encoding="utf-8").lower()
+        self.assertNotIn("wavebeat @", lock)
+        self.assertIn("sed -i '/wavebeat @ git+/d'", self.source.lower())
+        self.assertNotIn("wavebeat_ckpt", self.source)
+        self.assertNotIn("wavebeat.pth", self.source.lower())
+
     def test_narration_cache_is_synchronized_across_containers(self) -> None:
         self.assertIn("narration_cache_volume.reload()", self.source)
         self.assertIn("narration_cache_volume.commit()", self.source)
+
+    def test_cache_deletion_is_operator_only_not_an_http_route(self) -> None:
+        self.assertIn("def delete_narration_cache_entry(", self.source)
+        self.assertNotIn('@web_app.delete("/narration', self.source)
+        self.assertNotIn('@web_app.get("/narration', self.source)
 
 
 if __name__ == "__main__":

@@ -6,8 +6,10 @@ import unittest
 from pathlib import Path
 
 from evidence_narrator import (
+    CACHE_SCHEMA_VERSION, CACHE_TTL_SECONDS,
     STATUS_CACHE_HIT, STATUS_FALLBACK, STATUS_GENERATED,
-    compact_evidence, narrate_evidence, validate_narration,
+    cache_key, compact_evidence, delete_cached_narration,
+    delete_expired_cached_narrations, narrate_evidence, validate_narration,
 )
 
 
@@ -114,11 +116,65 @@ class EvidenceNarratorTests(unittest.TestCase):
 
     def test_cache_miss_then_hit_makes_only_one_generation(self):
         responses = FakeResponses(valid_payload())
-        first = narrate_evidence("e" * 64, self.evidence, api_key="test", cache_dir=self.cache, client_factory=self.factory(responses))
-        second = narrate_evidence("e" * 64, self.evidence, api_key="test", cache_dir=self.cache, client_factory=self.factory(responses))
+        first = narrate_evidence("e" * 64, self.evidence, api_key="test", cache_dir=self.cache, client_factory=self.factory(responses), now=1_000)
+        second = narrate_evidence("e" * 64, self.evidence, api_key="test", cache_dir=self.cache, client_factory=self.factory(responses), now=1_001)
         self.assertEqual(first["status"], STATUS_GENERATED)
         self.assertEqual(second["status"], STATUS_CACHE_HIT)
         self.assertEqual(len(responses.calls), 1)
+
+    def test_expired_cache_entry_is_invalid_and_regenerated(self):
+        responses = FakeResponses(valid_payload())
+        audio_hash = "f" * 64
+        first = narrate_evidence(audio_hash, self.evidence, api_key="test", cache_dir=self.cache, client_factory=self.factory(responses), now=2_000)
+        before_expiry = narrate_evidence(audio_hash, self.evidence, api_key="test", cache_dir=self.cache, client_factory=self.factory(responses), now=2_000 + CACHE_TTL_SECONDS - 1)
+        at_expiry = narrate_evidence(audio_hash, self.evidence, api_key="test", cache_dir=self.cache, client_factory=self.factory(responses), now=2_000 + CACHE_TTL_SECONDS)
+        self.assertEqual(first["status"], STATUS_GENERATED)
+        self.assertEqual(before_expiry["status"], STATUS_CACHE_HIT)
+        self.assertEqual(at_expiry["status"], STATUS_GENERATED)
+        self.assertEqual(len(responses.calls), 2)
+
+    def test_cache_stores_only_minimal_versioned_envelope_and_narration(self):
+        audio_hash = "1" * 64
+        narrate_evidence(
+            audio_hash, self.evidence, api_key="test", cache_dir=self.cache,
+            client_factory=self.factory(FakeResponses(valid_payload())), now=3_000,
+        )
+        envelope = json.loads((self.cache / f"{cache_key(audio_hash)}.json").read_text())
+        self.assertEqual(
+            set(envelope),
+            {"schema_version", "created_at_unix", "expires_at_unix", "content"},
+        )
+        self.assertEqual(envelope["schema_version"], CACHE_SCHEMA_VERSION)
+        self.assertEqual(envelope["expires_at_unix"] - envelope["created_at_unix"], CACHE_TTL_SECONDS)
+        rendered = json.dumps(envelope)
+        for forbidden in ("raw_audio", "embedding", "filename", "researcher_note", audio_hash):
+            self.assertNotIn(forbidden, rendered)
+
+    def test_operator_deletion_is_hash_addressed_and_returns_no_content(self):
+        audio_hash = "2" * 64
+        narrate_evidence(
+            audio_hash, self.evidence, api_key="test", cache_dir=self.cache,
+            client_factory=self.factory(FakeResponses(valid_payload())), now=4_000,
+        )
+        self.assertTrue(delete_cached_narration(audio_hash, cache_dir=self.cache))
+        self.assertFalse(delete_cached_narration(audio_hash, cache_dir=self.cache))
+        with self.assertRaises(ValueError):
+            delete_cached_narration("../not-a-hash", cache_dir=self.cache)
+
+    def test_expired_cleanup_deletes_only_expired_entries(self):
+        expired_hash, current_hash = "3" * 64, "4" * 64
+        for audio_hash, created_at in ((expired_hash, 5_000), (current_hash, 5_100)):
+            narrate_evidence(
+                audio_hash, self.evidence, api_key="test", cache_dir=self.cache,
+                client_factory=self.factory(FakeResponses(valid_payload())), now=created_at,
+            )
+        deleted = delete_expired_cached_narrations(
+            cache_dir=self.cache,
+            now=5_000 + CACHE_TTL_SECONDS,
+        )
+        self.assertEqual(deleted, 1)
+        self.assertFalse((self.cache / f"{cache_key(expired_hash)}.json").exists())
+        self.assertTrue((self.cache / f"{cache_key(current_hash)}.json").exists())
 
 
 if __name__ == "__main__": unittest.main()
