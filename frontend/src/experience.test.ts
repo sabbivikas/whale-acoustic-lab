@@ -17,7 +17,8 @@ function response(codas: number): AnalyzeResponse {
 }
 
 test("sample action points to an attributed repository WAV", () => {
-  assert.match(SAMPLE_RECORDING.url, /^\/samples\/.*\.wav$/);
+  assert.match(SAMPLE_RECORDING.url, /\/samples\/.*\.wav$/);
+  assert.doesNotMatch(SAMPLE_RECORDING.url, /\/{2,}/);
   assert.equal(SAMPLE_RECORDING.license, "CC BY 4.0");
   assert.match(SAMPLE_RECORDING.source, /Dominica Sperm Whale Project/);
 });

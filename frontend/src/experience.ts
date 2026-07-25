@@ -1,4 +1,5 @@
 import type { AnalyzeResponse } from "./api";
+import { publicAssetUrl } from "./public-path";
 
 export const HOME_ACTIONS = [
   { id: "sample-option", className: "sample-card", icon: "▶", title: "Try a real whale call", description: "Open a precomputed public DSWP sample" },
@@ -16,7 +17,7 @@ export const LOADING_STEPS = [
 ] as const;
 
 export const SAMPLE_RECORDING = {
-  url: "/samples/dswp-1.wav",
+  url: publicAssetUrl("samples/dswp-1.wav"),
   filename: "DSWP public sample 1.wav",
   source: "Dominica Sperm Whale Project public dataset",
   sourceUrl: "https://huggingface.co/datasets/orrp/DSWP",
