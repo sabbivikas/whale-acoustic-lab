@@ -2,6 +2,8 @@
 
 Whale Acoustic Lab is an evidence-bounded product and researcher workspace for exploring sperm-whale recordings. Its public site is a static, zero-cost experience: an attributed sample has a checked-in precomputed result, while uploads and microphone recordings use transparent browser-only timing analysis. Researchers may explicitly connect their own compatible backend for full WhAM features.
 
+[Open the live zero-cost demo](https://sabbivikas.github.io/whale-acoustic-lab/)
+
 > Scientists have not literally translated sperm-whale language. This project analyzes acoustic structure. Its family matches, conversational-role hypotheses, model-space neighbors, and musical analogies are limited comparisons—not statements of meaning, identity, intent, emotion, clan, or dialect.
 
 Original Whale Acoustic Lab code is copyright © 2026 Vikas Sabbi and released
@@ -120,9 +122,9 @@ The default hosted path performs no remote inference:
    locally. Without WhAM, Art View uses deterministic timing/audio-hash values
    that are explicitly not represented as an embedding.
 
-The maintainer’s Modal application is intentionally stopped. The public Vercel
-bundle contains no maintainer Modal URL, calls no OpenAI service, and incurs no
-per-analysis Modal, GPU, WhAM, or model-provider cost.
+The maintainer’s Modal application is intentionally stopped. The public
+GitHub Pages bundle contains no maintainer Modal URL, calls no OpenAI service,
+and incurs no per-analysis Modal, GPU, WhAM, or model-provider cost.
 
 ### Researcher-operated backend pipeline
 
@@ -195,7 +197,7 @@ Corpus persistence is opt-in.
 
 The optional OpenAI request receives compact calculated evidence—not raw audio, the full embedding, filenames, or researcher annotations—and uses `store:false`. This setting avoids Responses application-state storage; default API abuse-monitoring retention can still apply unless the organization has approved data controls.
 
-Read [PRIVACY.md](PRIVACY.md) and [DATA_RETENTION.md](DATA_RETENTION.md). Do not use this project with recordings you are not authorized to process. Review the deployed Modal, OpenAI, and Vercel dashboard settings before processing sensitive or embargoed research data.
+Read [PRIVACY.md](PRIVACY.md) and [DATA_RETENTION.md](DATA_RETENTION.md). Do not use this project with recordings you are not authorized to process. The public GitHub Pages mode has no server-side analysis or data store. Researchers using their own backend must review that operator’s hosting, model-provider, logging, and retention settings before processing sensitive or embargoed data.
 
 ## Scientific limitations and reproducibility
 
@@ -218,5 +220,6 @@ reporting instructions are in [GOVERNANCE.md](GOVERNANCE.md),
 [SECURITY.md](SECURITY.md), and [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md).
 The code repository is public. Hosted-service release remains separate: the
 maintainer’s Modal application is intentionally stopped, while the public
-frontend is designed for a zero-cost static deployment. See
+frontend is deployed as a zero-cost static
+[GitHub Pages site](https://sabbivikas.github.io/whale-acoustic-lab/). See
 [PUBLICATION_AUDIT.md](PUBLICATION_AUDIT.md).

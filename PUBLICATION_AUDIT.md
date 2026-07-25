@@ -1,13 +1,15 @@
 # Final publication audit
 
-Audit updated: 2026-07-24. The code repository is public.
+Audit updated: 2026-07-24. The code repository and zero-cost static site are
+public.
 
 ## Verdict
 
 **The code repository is public and passed its publication gates. The
-zero-cost static frontend is eligible for deployment after local/CI validation
-and free-tier confirmation. A full hosted inference service has separate
-unresolved launch requirements.**
+zero-cost frontend is deployed with GitHub Pages at
+https://sabbivikas.github.io/whale-acoustic-lab/ and passed local, CI, CodeQL,
+Pages-artifact, and anonymous browser checks. A full hosted inference service
+has separate unresolved launch requirements.**
 
 The EC1 license/provenance blocker remains resolved. The repository is
 https://github.com/sabbivikas/whale-acoustic-lab. Ownership, contribution,
@@ -84,6 +86,9 @@ From that clean tree:
 - Credential rotation required: no evidence requiring rotation was found.
 - `store:false` and the compact GPT evidence boundary are now release-tested.
 - The precomputed sample and browser-only analysis make no analysis API request.
+- The GitHub Pages artifact contains no Modal or OpenAI endpoint, backend
+  environment variable, serverless function, analytics integration, or
+  database.
 - Raw audio can leave the browser only after a researcher explicitly connects
   a compatible backend and then starts a later analysis.
 - OpenAI receives no raw audio, full embedding, filename, or researcher note.
@@ -118,6 +123,7 @@ From that clean tree:
 - Pure local backend tests: **70/70 passed**, including three EC1 publication/runtime tests plus WaveBeat, weight-route, cache-lifecycle, font-hosting, and privacy-boundary tests.
 - TypeScript type-check: passed.
 - Production frontend build: passed.
+- GitHub Pages base-path and static-asset validation: passed.
 - Python syntax/compile validation: passed.
 - JSON provenance validation: passed.
 - `CITATION.cff` and GitHub Actions YAML syntax: passed.
@@ -149,10 +155,13 @@ The code repository is public and its GitHub-native security protections are
 tracked separately from hosting. Private Vulnerability Reporting is the
 documented sensitive-reporting path.
 
-The maintainer’s Modal application must remain stopped. The static Vercel
-frontend may be deployed without a backend URL, functions, analytics,
-databases, or paid features after the zero-cost release gates pass. A
-researcher-operated inference service retains the separate blockers below.
+The maintainer’s Modal application remains stopped. The public frontend is a
+static GitHub Pages artifact with no backend URL, functions, analytics,
+databases, or paid features. The public DSWP sample, browser-only upload,
+Research Mode, Annotation Evaluation, Corpus Explorer, and Art View were
+verified at the repository subpath. Bring Your Own Backend remains explicit
+opt-in. A researcher-operated inference service retains the separate blockers
+below.
 
 ## GitHub Actions compatibility
 
@@ -179,7 +188,8 @@ service as fully production-cleared:
 2. Capture and review the exact deployed Modal image inventory: base image,
    Debian/APT packages, FFmpeg build, complete Python/transitive dependency
    inventory, torch CUDA build, CUDA runtime, and driver.
-3. Manually verify and record Modal, OpenAI, and Vercel dashboard logging,
-   retention, collaborator, analytics, and data-control settings.
+3. Manually verify and record Modal and OpenAI dashboard logging, retention,
+   collaborator, and data-control settings before operating a hosted inference
+   service.
 4. Operator-test targeted narration-cache deletion and scheduled expired-entry
    cleanup in the authorized private production environment.

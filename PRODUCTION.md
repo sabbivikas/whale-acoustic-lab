@@ -37,19 +37,44 @@ stored. Later uploads are sent only while the researcher has explicitly kept
 that connection enabled. The researcher/operator is responsible for hosting
 cost, authentication, access control, model/data licenses, logs, and retention.
 
-## Vercel configuration
+## GitHub Pages deployment
 
-- Root directory: `frontend`
-- Framework: Vite
-- Install command: `npm ci`
-- Build command: `npm run build`
-- Output directory: `dist`
-- Environment variables: none
-- Functions/databases/analytics: none
+The live zero-cost site is:
 
-Deployment is permitted only after confirming the authenticated account is on
-a free Hobby/static path. If Vercel requires payment or an upgrade, do not
-deploy.
+https://sabbivikas.github.io/whale-acoustic-lab/
+
+`frontend/vite.config.ts` uses `/whale-acoustic-lab/` for production builds
+and `/` for the local Vite development server. Public sample and font URLs are
+base-safe, and the lazy Three.js import is rewritten by Vite.
+
+`.github/workflows/pages.yml` uses the official Pages pipeline:
+
+1. `npm ci`
+2. `npm run build`
+3. `python3 scripts/check_pages_build.py`
+4. `actions/configure-pages`
+5. `actions/upload-pages-artifact`
+6. `actions/deploy-pages`
+
+The deployed artifact is static. It contains no functions, databases,
+analytics, environment variables, maintainer backend URL, or server-side
+analysis route. `scripts/check_pages_build.py` rejects missing local assets,
+root-relative paths that escape the repository base, and Modal/OpenAI service
+markers.
+
+For local production-path testing:
+
+```bash
+cd frontend
+npm ci
+npm run build
+cd ..
+python3 scripts/check_pages_build.py
+```
+
+Serve `frontend/dist` beneath a local `/whale-acoustic-lab/` directory when
+performing an exact subpath browser check. Normal `npm run dev` continues to
+serve from `/`.
 
 ## Release gates
 
@@ -61,6 +86,7 @@ deploy.
 - a missing/modified public-sample analysis or reference-data copy;
 - secret/checkpoint/publication-policy violations.
 
-The production bundle must be scanned after `npm run build`. The maintainer’s
-`whale-acoustic-lab` Modal app must remain stopped, and release verification
-must not call its endpoint.
+The production bundle must be scanned after `npm run build`. The Pages
+artifact checker, local CI, CodeQL, and Pages workflow must pass for the same
+commit. The maintainer’s `whale-acoustic-lab` Modal app must remain stopped,
+and release verification must not call its endpoint.
