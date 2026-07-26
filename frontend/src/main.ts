@@ -4,7 +4,8 @@ import "./research.css";
 import "./corpus.css";
 import "./home-ocean.css";
 import { analyzeWithBackend, collapseEmbedding, sha256, type AnalyzeResponse } from "./api";
-import { analyzeInBrowser, localArtVector } from "./browser-analysis";
+import { analyzeDecodedInBrowser, localArtVector } from "./browser-analysis";
+import { createBackendPcmWav, decodeAudioFile, waveformPeaksFromSamples, type DecodedAudioInput } from "./audio-input";
 import publicSampleAnalysis from "./data/dswp-1-analysis.v1.json";
 import { deriveParameters } from "./art/parameters";
 import { OceanRenderer } from "./art/canvas";
@@ -47,13 +48,13 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
     <div class="home-copy">
       <p class="kicker">A closer listen below the surface</p>
       <h1>Explore the rhythm inside a sperm-whale call.</h1>
-      <p class="lede">Upload, record, or try a public sample. Whale Acoustic Lab measures click timing, separates probable codas, and compares acoustic structure with published research.</p>
+      <p class="lede">Upload a WAV or MP3, record, or try a public sample. Whale Acoustic Lab measures click timing, separates probable codas, and compares acoustic structure with published research.</p>
       <p class="science-promise"><strong>Scientific boundary:</strong> this app analyzes acoustic structure. It does not literally translate whale language.</p>
-      <p class="privacy-promise"><strong>Your recording stays on this device.</strong> Uploads and microphone recordings use transparent browser-only analysis unless you explicitly connect your own backend.</p>
+      <p class="privacy-promise"><strong>Your recording stays on this device.</strong> WAV and MP3 uploads and microphone recordings are decoded and analyzed locally unless you explicitly connect your own backend.</p>
       <p class="model-license-notice"><strong>Noncommercial research and educational demo.</strong> WhAM source is MIT-licensed; its model weights are separately CC BY-NC-ND 4.0.</p>
     </div>
     <div class="capture-stage">
-      <input id="file" type="file" accept=".wav,audio/wav" hidden>
+      <input id="file" type="file" accept=".wav,.mp3,audio/wav,audio/x-wav,audio/mpeg,audio/mp3" hidden>
       <div id="capture-options" class="capture-grid">
         ${HOME_ACTIONS.map((action) => `<button id="${action.id}" class="capture-card ${action.className}" type="button"><span class="capture-icon ${action.id === "live-option" ? "live-icon" : ""}">${action.icon}</span><strong>${action.title}</strong><small>${action.description}</small></button>`).join("")}
         <p class="sample-attribution"><strong>Public sample:</strong> ${SAMPLE_RECORDING.source} · ${SAMPLE_RECORDING.license}<br>${SAMPLE_RECORDING.location} · collected ${SAMPLE_RECORDING.collectionPeriod}</p>
@@ -119,18 +120,6 @@ let researcherBackendUrl = localStorage.getItem(BACKEND_STORAGE_KEY) ?? "";
 const safe = (value: unknown) => String(value ?? "").replace(/[&<>'"]/g, character => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", "'": "&#39;", '"': "&quot;" })[character]!);
 const formatSeconds = (value: number) => `${value.toFixed(3)} s`;
 const stopAllAudio = () => document.querySelectorAll<HTMLAudioElement>("audio").forEach(player => { player.pause(); player.currentTime = 0; });
-
-async function waveformPeaks(file: File, bucketCount = 600): Promise<number[]> {
-  const context = new AudioContext();
-  try {
-    const buffer = await context.decodeAudioData(await file.arrayBuffer());
-    const channel = buffer.getChannelData(0);
-    return Array.from({ length: bucketCount }, (_, bucket) => {
-      const start = Math.floor(bucket * channel.length / bucketCount), end = Math.max(start + 1, Math.floor((bucket + 1) * channel.length / bucketCount));
-      let peak = 0; for (let index = start; index < end; index++) peak = Math.max(peak, Math.abs(channel[index])); return peak;
-    });
-  } finally { void context.close(); }
-}
 
 function drawWaveform(canvas: HTMLCanvasElement, peaks: number[], onsets: number[], duration: number): void {
   canvas.width = 900; canvas.height = 150; const context = canvas.getContext("2d")!; context.clearRect(0, 0, 900, 150);
@@ -223,9 +212,16 @@ function renderSources(): HTMLElement {
   section.querySelector<HTMLButtonElement>(".return-top")!.onclick = () => window.scrollTo({ top: 0, behavior: "smooth" }); return section;
 }
 
-function renderResults(response: AnalyzeResponse, peaks: number[]): void {
+function renderResults(response: AnalyzeResponse, peaks: number[], decoded: DecodedAudioInput): void {
   const availability = document.createElement("section"); availability.className = `analysis-availability product-section ${response.analysis_mode ?? ""}`;
-  availability.innerHTML = `<span class="kicker">${response.analysis_mode === "precomputed_public_sample" ? "Precomputed public sample" : response.analysis_mode === "researcher_backend" ? "Researcher-operated backend" : "Browser-only local analysis"}</span><h2>${response.analysis_mode === "browser_only" ? "Your recording stayed on this device." : "Analysis availability"}</h2><p>${safe(response.availability?.explanation ?? "")}</p>`;
+  const processingBoundary = response.analysis_mode === "browser_only"
+    ? "Processed locally in your browser"
+    : response.analysis_mode === "researcher_backend"
+      ? decoded.format === "MP3"
+        ? "MP3 decoded locally in your browser; temporary PCM WAV sent only to your configured backend"
+        : "WAV decoded locally for validation; sent only to your configured backend"
+      : "Static public sample with precomputed analysis";
+  availability.innerHTML = `<span class="kicker">${response.analysis_mode === "precomputed_public_sample" ? "Precomputed public sample" : response.analysis_mode === "researcher_backend" ? "Researcher-operated backend" : "Browser-only local analysis"}</span><h2>${response.analysis_mode === "browser_only" ? "Your recording stayed on this device." : "Analysis availability"}</h2><p>${safe(response.availability?.explanation ?? "")}</p><dl class="recording-input-facts"><div><dt>Original format</dt><dd>${decoded.format}</dd></div><div><dt>Original filename</dt><dd>${safe(decoded.originalFilename)}</dd></div><div><dt>Decoded sample rate</dt><dd>${decoded.sampleRate.toLocaleString()} Hz</dd></div><div><dt>Duration</dt><dd>${decoded.durationSeconds.toFixed(3)} s</dd></div><div class="processing-boundary"><dt>Processing</dt><dd>${safe(processingBoundary)}</dd></div></dl>`;
   passport.replaceChildren(availability, renderCallStory(response), renderNarration(response), renderCodaExplorer(response), renderNeighbors(response), renderScience(response, peaks), renderArtTeaser(response), renderSources());
 }
 
@@ -240,16 +236,25 @@ function stopLoading(): void { window.clearInterval(loadingTimer); loading.class
 async function processFile(file: File, preparedResponse?: AnalyzeResponse): Promise<void> {
   lastFile = file;
   lastPreparedResponse = preparedResponse;
-  if (!file.name.toLowerCase().endsWith(".wav") || file.size > 25 * 1024 * 1024) { showError("This audio format isn’t supported. Choose a valid WAV file no larger than 25 MB."); return; }
-  startLoading(); stopAllAudio(); if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = URL.createObjectURL(file); audio.src = audioUrl;
+  startLoading(); stopAllAudio();
   try {
-    const responsePromise = preparedResponse ? Promise.resolve(preparedResponse) : researcherBackendUrl ? analyzeWithBackend(file, researcherBackendUrl) : analyzeInBrowser(file);
-    const [seed, response, peaks] = await Promise.all([sha256(file), responsePromise, waveformPeaks(file)]);
+    const decoded = await decodeAudioFile(file);
+    if (audioUrl) URL.revokeObjectURL(audioUrl); audioUrl = URL.createObjectURL(file); audio.src = audioUrl;
+    const backendFile = researcherBackendUrl && decoded.format === "MP3"
+      ? createBackendPcmWav(decoded)
+      : file;
+    const responsePromise = preparedResponse
+      ? Promise.resolve(preparedResponse)
+      : researcherBackendUrl
+        ? analyzeWithBackend(backendFile, researcherBackendUrl)
+        : Promise.resolve(analyzeDecodedInBrowser(file, decoded));
+    const [seed, response] = await Promise.all([sha256(file), responsePromise]);
+    const peaks = waveformPeaksFromSamples(decoded.samples);
     const hasWham = response.embedding != null && response.embedding_dimension === 1280;
     const vector = hasWham ? collapseEmbedding(response.embedding, 1280) : localArtVector(response, seed);
     renderer?.pause(); renderer = new OceanRenderer(get<HTMLCanvasElement>("#art"), deriveParameters(vector, seed)); renderer.pause(); pauseButton.textContent = "▶ Play";
     get("#art-description").textContent = hasWham ? "This artwork is deterministically mapped from an existing WhAM acoustic fingerprint. It is expressive—not a scientific translation." : "This browser-only artwork is deterministically mapped from measured click timing and the audio hash. It is not a WhAM embedding or scientific translation.";
-    renderResults(response, peaks); researchWorkspace?.destroy(); researchWorkspace = new ResearchWorkspace(researchView, response, file, seed, audio); get("#filename").textContent = file.name; get("#meta").textContent = `${response.coda_sequence.probable_coda_count} probable codas · ${response.analysis_mode === "precomputed_public_sample" ? "precomputed public sample" : response.analysis_mode === "researcher_backend" ? "researcher backend" : `${response.processing_time_seconds.toFixed(1)} seconds · on-device`}`;
+    renderResults(response, peaks, decoded); researchWorkspace?.destroy(); researchWorkspace = new ResearchWorkspace(researchView, response, file, seed, audio); get("#filename").textContent = file.name; get("#meta").textContent = `${decoded.format} · ${decoded.sampleRate.toLocaleString()} Hz · ${decoded.durationSeconds.toFixed(2)} s · ${response.analysis_mode === "precomputed_public_sample" ? "precomputed public sample" : response.analysis_mode === "researcher_backend" ? "decoded locally · researcher backend" : "Processed locally in your browser"}`;
     home.classList.add("hidden"); results.classList.remove("hidden"); passport.classList.remove("hidden"); researchView.classList.add("hidden"); resultNav.classList.remove("hidden"); artView.classList.add("hidden"); resultNav.querySelectorAll("button").forEach(button => button.classList.toggle("active", button.getAttribute("data-target") === "call-story")); window.scrollTo({ top: 0 });
   } catch (cause) { showError(friendlyAnalysisError(cause)); }
   finally { stopLoading(); }
@@ -260,7 +265,7 @@ function showError(message: string): void { stopLoading(); captureOptions.classL
 async function analyzeSample(): Promise<void> {
   startLoading();
   try { const response = await fetch(SAMPLE_RECORDING.url); if (!response.ok) throw new Error("Sample unavailable"); const blob = await response.blob(); await processFile(new File([blob], SAMPLE_RECORDING.filename, { type: "audio/wav" }), publicSampleAnalysis as unknown as AnalyzeResponse); }
-  catch (cause) { showError(cause instanceof Error && cause.message === "Sample unavailable" ? "The public sample could not be loaded. Try uploading a WAV file instead." : friendlyAnalysisError(cause)); }
+  catch (cause) { showError(cause instanceof Error && cause.message === "Sample unavailable" ? "The public sample could not be loaded. Try uploading a WAV or MP3 file instead." : friendlyAnalysisError(cause)); }
 }
 
 function showStory(): void { corpusView.classList.add("hidden"); corpusNavButton.classList.remove("active"); artView.classList.add("hidden"); results.classList.remove("hidden"); passport.classList.remove("hidden"); researchView.classList.add("hidden"); researchWorkspace?.stop(); renderer?.pause(); resultNav.querySelectorAll("button").forEach(button => button.classList.toggle("active", button.getAttribute("data-target") === "call-story")); document.querySelector("#call-story")?.scrollIntoView({ behavior: "smooth" }); }

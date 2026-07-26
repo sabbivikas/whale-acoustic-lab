@@ -1,13 +1,13 @@
 # Data retention and deletion
 
-Last reviewed: 2026-07-24.
+Last reviewed: 2026-07-25.
 
 | Data class | Application storage | Expected application lifetime | Deletion method | Provider/dashboard verification |
 |---|---|---|---|---|
 | Precomputed public result | Versioned static JSON in the public repository/site | Release lifetime | Remove in a reviewed future release | Contains attributed sample calculations and an existing stored embedding; no user data. |
-| Default upload/microphone audio | Browser memory/object URL | Current analysis/page session | Analyze another recording, reset/close page, or clear site data | Never uploaded by default. |
+| Default WAV/MP3 upload or microphone audio | Browser memory/object URL | Current analysis/page session | Analyze another recording, reset/close page, or clear site data | Never uploaded by default. MP3 is decoded locally to mono PCM. |
 | Optional compatible backend URL | Browser localStorage | Until the researcher disconnects or clears site data | “Use browser-only mode” or browser site-data controls | Contains a public endpoint URL only; no API key is requested. |
-| Submitted WAV bytes | Request memory; a trimmed temporary file inside the Modal container | Request/inference lifetime; temp file deleted in `finally` | Automatic application cleanup | Confirm Modal endpoint classification and request/log retention. |
+| Explicitly submitted WAV bytes | Browser-created request memory; a trimmed temporary file inside a researcher-operated backend container | Request/inference lifetime; temp file deleted in `finally` | Automatic application cleanup | MP3 is converted to a temporary PCM WAV in browser memory before submission. Confirm operator endpoint classification and request/log retention. |
 | WhAM embedding | Response memory/browser state; optionally included in a user-exported research package | Current page session unless the user exports or explicitly saves a corpus containing it | Close/reset page; delete local export/saved corpus | No backend embedding database exists in code. Confirm provider logs do not capture response bodies. |
 | Compact GPT evidence | OpenAI request; backend memory | Provider-policy dependent | Provider controls/support; not retained in app database | Confirm OpenAI org/project Data Controls. `store=False` is enabled, but default abuse monitoring may last up to 30 days. |
 | Generated narration cache | `whale-art-narration-cache` Modal Volume, hash-derived JSON envelope | 30 days; expired entries are invalid and a daily authenticated scheduled function removes expired/invalid envelopes | Authenticated, non-HTTP `delete_narration_cache_entry` operator function; whole-volume deletion remains available to operators | Operator-test scheduled and targeted deletion after private deployment. |

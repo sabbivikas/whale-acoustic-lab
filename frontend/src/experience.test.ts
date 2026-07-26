@@ -26,6 +26,7 @@ test("sample action points to an attributed repository WAV", () => {
 test("all three homepage actions remain immediately available", () => {
   assert.deepEqual(HOME_ACTIONS.map((action) => action.id), ["sample-option", "upload-option", "live-option"]);
   assert.deepEqual(HOME_ACTIONS.map((action) => action.title), ["Try a real whale call", "Upload audio", "Listen Live"]);
+  assert.match(HOME_ACTIONS[1].description, /WAV or MP3/);
 });
 
 test("loading experience has the six ordered non-percentage states", () => {
@@ -46,7 +47,11 @@ test("errors are actionable and never expose raw transport text", () => {
   const network = friendlyAnalysisError(new Error("Failed to fetch"));
   assert.match(network, /backend/);
   assert.doesNotMatch(network, /Failed to fetch/);
-  assert.match(friendlyAnalysisError(new Error("unsupported WAV")), /valid WAV/);
+  assert.match(friendlyAnalysisError(new Error("unsupported WAV")), /WAV or MP3/);
+  assert.equal(
+    friendlyAnalysisError(new Error("This MP3 could not be decoded by your browser. Try another MP3 or convert it to WAV.")),
+    "This MP3 could not be decoded by your browser. Try another MP3 or convert it to WAV.",
+  );
 });
 
 test("responsive assumptions keep story before science", () => {

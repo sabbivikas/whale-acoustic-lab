@@ -17,7 +17,8 @@ inference was used.
 
 ### Browser-only local analysis
 
-Uploads and microphone recordings are decoded with Web Audio. The browser
+WAV and MP3 uploads and microphone recordings are decoded with Web Audio, are
+limited to 25 MiB and 30 seconds, and are averaged into mono PCM. The browser
 performs click estimates, trimming, coda segmentation, ICI and normalized
 rhythm calculations, EC1 MSE comparison/abstention, deterministic narration,
 waveform/spectrogram rendering, annotation, evaluation, and export.
@@ -34,7 +35,9 @@ This mode:
 The Advanced panel accepts a researcher’s compatible HTTPS backend URL and
 stores it only in that browser’s `localStorage`. No API key is requested or
 stored. Later uploads are sent only while the researcher has explicitly kept
-that connection enabled. The researcher/operator is responsible for hosting
+that connection enabled. MP3 is still decoded locally and converted to a
+temporary PCM WAV in browser memory before this explicit submission. The
+researcher/operator is responsible for hosting
 cost, authentication, access control, model/data licenses, logs, and retention.
 
 ## GitHub Pages deployment

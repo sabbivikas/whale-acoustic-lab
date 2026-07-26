@@ -1,14 +1,14 @@
 # Privacy and data flow
 
-Last reviewed: 2026-07-24. This document describes verified project behavior and current provider documentation. It is not legal advice. A researcher-operated backend’s dashboard settings must be checked before accepting sensitive or embargoed recordings.
+Last reviewed: 2026-07-25. This document describes verified project behavior and current provider documentation. It is not legal advice. A researcher-operated backend’s dashboard settings must be checked before accepting sensitive or embargoed recordings.
 
 ## What the code does
 
 | Data | Destination | Trigger | Verified use |
 |---|---|---|---|
 | Bundled public sample | Static site/browser memory | After the user chooses the sample | Loads the attributed WAV and versioned precomputed JSON. No analysis API request. |
-| Uploaded/microphone WAV, default mode | Browser memory | After the user chooses a file or finishes recording | Web Audio decode, waveform/spectrogram, click/coda/rhythm estimates, deterministic explanation. No upload or inference request. |
-| Uploaded/microphone WAV, Bring Your Own Backend | Researcher-configured compatible endpoint | Only after a backend URL has been explicitly stored and an analysis is started | Backend-defined analysis. The researcher controls hosting, access, licensing, logging, and retention. |
+| Uploaded WAV/MP3 or microphone WAV, default mode | Browser memory | After the user chooses a file or finishes recording | Web Audio decode, channel averaging to mono PCM, waveform/spectrogram, click/coda/rhythm estimates, deterministic explanation. No upload or inference request. |
+| Uploaded WAV/MP3 or microphone WAV, Bring Your Own Backend | Researcher-configured compatible endpoint | Only after a backend URL has been explicitly stored and an analysis is started | MP3 is decoded locally and converted to a temporary mono PCM WAV in memory before submission. The researcher controls hosting, access, licensing, logging, and retention. |
 | Compact calculated evidence | OpenAI Responses API | Backend narration step during analysis when a backend key exists and no valid cache hit is available | Schema-bound narration. The whitelist excludes raw audio, full embeddings, filenames, identities, and researcher annotations. |
 | Automatic and corrected annotations | Browser localStorage | Research Mode edits | Draft restoration keyed by audio SHA-256. No annotation-edit network request exists. |
 | Imported research packages/corpus | Browser memory | Researcher selects files | Validation, aggregation, cosine similarity, PCA, filtering, outlier scoring, and export. |
@@ -30,7 +30,7 @@ Manual verification: confirm the production OpenAI organization/project Data Con
 The maintainer’s Modal application is intentionally stopped. The production
 frontend contains no maintainer Modal URL and requires no
 `VITE_WHAM_API_URL`. The public sample uses same-origin static files. Default
-uploads and microphone recordings are decoded and measured in the browser;
+WAV/MP3 uploads and microphone recordings are decoded and measured in the browser;
 Research Mode, Annotation Evaluation, exports, Corpus Explorer, PCA, and Art
 View remain browser-only. The static site makes no OpenAI or GPT request.
 
@@ -42,7 +42,8 @@ remains enabled; disconnecting restores local-only behavior.
 ## Optional researcher-operated Modal boundary
 
 If a researcher separately operates the included backend and connects its URL,
-the WAV request is sent to that endpoint. The backend reads it into request
+the WAV request is sent to that endpoint. For an MP3 input, this request
+contains only the temporary PCM WAV created locally in browser memory. The backend reads it into request
 memory and writes only a trimmed temporary WAV for inference; that file is
 deleted. WhAM weights remain in the operator’s private persistent volume.
 Generated narration JSON may be cached for 30 days in a separate volume using

@@ -18,7 +18,8 @@ See [COPYRIGHT.md](COPYRIGHT.md), [CONTRIBUTORS.md](CONTRIBUTORS.md), and
 The public experience provides three immediate paths:
 
 - **Try a real whale call** using an attributed DSWP sample and its versioned precomputed analysis.
-- **Upload audio** for local browser-only analysis.
+- **Upload WAV or MP3 audio** for local browser-only analysis (up to 25 MiB and
+  30 seconds).
 - **Listen Live** for local browser-only analysis; microphone permission is requested only after that action.
 
 The three operating modes are:
@@ -112,8 +113,9 @@ Static hosting and mode-specific release gates are in
 The default hosted path performs no remote inference:
 
 1. The public sample loads an attributed WAV and its versioned static result.
-2. User uploads and microphone recordings remain in the browser.
-3. Web Audio decoding feeds the documented waveform click detector.
+2. WAV and MP3 uploads and microphone recordings remain in the browser.
+3. Web Audio decodes supported input, averages channels into the existing mono
+   PCM representation, and feeds the documented waveform click detector.
 4. Existing thresholds segment probable codas.
 5. Existing equal-click-count EC1 timing references support MSE comparison and
    abstention; measurements remain estimates.
@@ -130,7 +132,8 @@ and incurs no per-analysis Modal, GPU, WhAM, or model-provider cost.
 
 The optional compatible backend:
 
-1. validates and decodes a user-submitted WAV;
+1. receives a WAV submission; MP3 uploads are first decoded locally and
+   converted to a temporary mono PCM WAV in browser memory;
 2. normalizes it to mono 16-bit PCM where required;
 3. trims only low-energy leading/trailing boundaries;
 4. estimates waveform click onsets;
@@ -188,7 +191,7 @@ These checks do not require secrets, GPUs, Modal execution, OpenAI, WhAM inferen
 
 ## Privacy
 
-By default, uploaded and microphone audio stays on the device. The precomputed
+By default, uploaded WAV/MP3 and microphone audio stays on the device. The precomputed
 sample requires only same-origin static asset requests. Audio is transmitted
 only when a researcher explicitly configures a compatible backend and then
 starts an analysis. Research edits, evaluation, exports, imported research

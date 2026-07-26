@@ -1,4 +1,5 @@
 import type { AnalyzeResponse, MeasuredRhythm } from "./api";
+import { decodeAudioFile, type DecodedAudioInput } from "./audio-input";
 import rhythmIndexData from "./data/rhythm-reference-index.v1.json";
 import segmentationThresholdsData from "./data/segmentation-thresholds.v1.json";
 
@@ -404,22 +405,10 @@ function deterministicNarration(sequence: JsonRecord): AnalyzeResponse["ai_evide
   return { status: "deterministic_fallback", model: null, prompt_version: "browser-deterministic-v1", evidence_version: "whale-calculated-evidence-v1", content };
 }
 
-function monoSamples(buffer: AudioBuffer): Float32Array {
-  const mono = new Float32Array(buffer.length);
-  for (let channel = 0; channel < buffer.numberOfChannels; channel += 1) {
-    const source = buffer.getChannelData(channel);
-    for (let index = 0; index < mono.length; index += 1) mono[index] += source[index] / buffer.numberOfChannels;
-  }
-  return mono;
-}
-
-export async function analyzeInBrowser(file: File): Promise<AnalyzeResponse> {
-  const started = performance.now(), bytes = await file.arrayBuffer();
-  const context = new AudioContext();
-  let buffer: AudioBuffer;
-  try { buffer = await context.decodeAudioData(bytes.slice(0)); } finally { void context.close(); }
-  const original = monoSamples(buffer), trimmed = trimActiveAudio(original, buffer.sampleRate);
-  const callStructure = analyzePcm(trimmed.samples, buffer.sampleRate);
+export function analyzeDecodedInBrowser(file: File, decoded: DecodedAudioInput): AnalyzeResponse {
+  const started = performance.now();
+  const trimmed = trimActiveAudio(decoded.samples, decoded.sampleRate);
+  const callStructure = analyzePcm(trimmed.samples, decoded.sampleRate);
   const sequence = segment(callStructure.estimated_click_onsets_seconds);
   const overall = analyzeCoda(callStructure.estimated_inter_click_intervals_seconds, callStructure.estimated_click_count);
   return {
@@ -436,14 +425,14 @@ export async function analyzeInBrowser(file: File): Promise<AnalyzeResponse> {
     gpu_name: "Browser CPU · transparent waveform analysis",
     uploaded_recording: {
       filename: file.name,
-      duration_seconds: buffer.duration,
-      original_duration_seconds: buffer.duration,
-      analyzed_duration_seconds: trimmed.samples.length / buffer.sampleRate,
+      duration_seconds: decoded.durationSeconds,
+      original_duration_seconds: decoded.durationSeconds,
+      analyzed_duration_seconds: trimmed.samples.length / decoded.sampleRate,
       trim_start_seconds: trimmed.start,
       trim_end_seconds: trimmed.end,
       trimming_applied: trimmed.applied,
-      sample_rate_hz: buffer.sampleRate,
-      channels: buffer.numberOfChannels,
+      sample_rate_hz: decoded.sampleRate,
+      channels: decoded.channelCount,
       bit_depth: 0,
     },
     matches: [],
@@ -454,6 +443,10 @@ export async function analyzeInBrowser(file: File): Promise<AnalyzeResponse> {
     coda_code_interpretation: overall as AnalyzeResponse["coda_code_interpretation"],
     coda_sequence: sequence as AnalyzeResponse["coda_sequence"],
   };
+}
+
+export async function analyzeInBrowser(file: File): Promise<AnalyzeResponse> {
+  return analyzeDecodedInBrowser(file, await decodeAudioFile(file));
 }
 
 export function localArtVector(response: AnalyzeResponse, seed: string): number[] {

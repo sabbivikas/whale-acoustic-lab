@@ -3,7 +3,7 @@ import { publicAssetUrl } from "./public-path";
 
 export const HOME_ACTIONS = [
   { id: "sample-option", className: "sample-card", icon: "▶", title: "Try a real whale call", description: "Open a precomputed public DSWP sample" },
-  { id: "upload-option", className: "", icon: "↑", title: "Upload audio", description: "Analyze locally · WAV · max 25 MB" },
+  { id: "upload-option", className: "", icon: "↑", title: "Upload audio", description: "Analyze locally · WAV or MP3 · max 25 MB · 30 sec" },
   { id: "live-option", className: "", icon: "●", title: "Listen Live", description: "Record and analyze locally · up to 20 seconds" },
 ] as const;
 
@@ -57,6 +57,9 @@ export function callStory(response: AnalyzeResponse): CallStory {
 export function friendlyAnalysisError(cause: unknown): string {
   const text = cause instanceof Error ? cause.message : String(cause ?? "");
   const lower = text.toLowerCase();
+  if (text === "This MP3 could not be decoded by your browser. Try another MP3 or convert it to WAV.") return text;
+  if (text === "This WAV could not be decoded by your browser. Try another WAV file.") return text;
+  if (lower.includes("larger than 25 mb") || lower.includes("longer than 30 seconds") || lower.includes("wav or mp3")) return text;
   if (lower.includes("failed to fetch") || lower.includes("network") || lower.includes("load failed"))
     return "We couldn’t reach the researcher-operated backend. Disconnect it to use zero-cost browser-only analysis, or verify its URL and access controls.";
   if (lower.includes("silent") || lower.includes("no active audio"))
@@ -64,12 +67,12 @@ export function friendlyAnalysisError(cause: unknown): string {
   if (lower.includes("shorter than") || lower.includes("too short"))
     return "The recording is too short to analyze reliably. Record or upload at least one second of clear audio.";
   if (lower.includes("wav") || lower.includes("unsupported") || lower.includes("415"))
-    return "This audio format isn’t supported. Choose a valid WAV file no larger than 25 MB.";
+    return "This audio format isn’t supported. Choose a WAV or MP3 file no larger than 25 MB.";
   if (lower.includes("400"))
-    return "The recording could not be read. Check that it is a valid, non-empty WAV file and try again.";
+    return "The recording could not be read. Check that it is a valid, non-empty WAV or MP3 file and try again.";
   if (lower.includes("500") || lower.includes("503") || lower.includes("cold"))
     return "The analysis service is still starting or temporarily unavailable. Wait a moment and try again.";
-  return "We couldn’t complete this analysis. Try the recording again, or choose a shorter, clearer WAV file.";
+  return "We couldn’t complete this analysis. Try the recording again, or choose a shorter, clearer WAV or MP3 file.";
 }
 
 export function responsiveAssumptions() {

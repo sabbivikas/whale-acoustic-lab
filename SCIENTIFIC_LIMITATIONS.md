@@ -4,7 +4,19 @@ Whale Acoustic Lab is an exploratory acoustic-analysis interface. It is not a wh
 
 ## Audio input, decoding, and trimming
 
-The backend accepts WAV uploads up to 25 MiB. `audio_decode.py` uses the standard-library WAV reader for compatible files and FFmpeg for supported alternatives, producing mono 16-bit PCM. Channel values are averaged; decoding can discard channel-specific spatial information.
+The static browser accepts WAV and MP3 uploads up to 25 MiB and analyzes at
+most 30 seconds. Web Audio `decodeAudioData` support depends on the browser;
+an MP3 that one browser cannot decode must be tried in another supported form
+or converted to WAV. Decoded channels are averaged into the same mono
+floating-point PCM representation used by the existing browser pipeline, so
+channel-specific spatial information is discarded. Lossy MP3 encoding can
+alter transients and therefore affect estimated click timing.
+
+The optional backend receives WAV submissions. `audio_decode.py` uses the
+standard-library WAV reader for compatible files and FFmpeg for supported
+alternatives, producing mono 16-bit PCM. In Bring Your Own Backend mode, an
+MP3 is decoded locally and converted to a temporary mono PCM WAV in browser
+memory before the user-initiated submission.
 
 `audio_trimming.py` measures RMS in 20 ms frames and trims only before the first and after the last active frame. The threshold is the maximum of 5% of peak RMS, four times the mean RMS of the quietest 10% of frames, and `1e-5`. Peak RMS below `0.002` is rejected; the unpadded active span must be at least one second; 150 ms padding is restored around accepted boundaries. Interior gaps are never removed.
 

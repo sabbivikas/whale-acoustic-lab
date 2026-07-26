@@ -53,9 +53,16 @@ test("production UI has no compiled backend environment or implicit analysis req
   const main = readFileSync(new URL("./main.ts", import.meta.url), "utf8");
   const api = readFileSync(new URL("./api.ts", import.meta.url), "utf8");
   assert.ok(!(main + api).includes(["VITE", "WHAM", "API", "URL"].join("_")));
-  assert.match(main, /preparedResponse \? Promise\.resolve\(preparedResponse\)/);
-  assert.match(main, /researcherBackendUrl \? analyzeWithBackend/);
-  assert.match(main, /: analyzeInBrowser\(file\)/);
+  assert.match(main, /preparedResponse\s*\?\s*Promise\.resolve\(preparedResponse\)/);
+  assert.match(
+    main,
+    /researcherBackendUrl\s*\?\s*analyzeWithBackend\(backendFile, researcherBackendUrl\)/,
+  );
+  assert.match(
+    main,
+    /:\s*Promise\.resolve\(analyzeDecodedInBrowser\(file, decoded\)\)/,
+  );
+  assert.match(main, /createBackendPcmWav\(decoded\)/);
 });
 
 test("bring-your-own backend rejects credentialed and non-HTTPS remote URLs before upload", async () => {
